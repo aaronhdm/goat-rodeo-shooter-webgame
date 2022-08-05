@@ -2,9 +2,9 @@ const router = require('express').Router();
 
 
 // GET homepage
-router.get('/', async (req, res) => {
+router.get('/game', async (req, res) => {
     try {
-      res.render('homepage', {});
+      res.render('gamepage', );
     } catch (err) {
       console.log(err);
       res.status(500).json(err);
