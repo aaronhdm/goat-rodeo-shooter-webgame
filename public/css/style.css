@@ -12,11 +12,9 @@ body {
     align-items: center;
 }
 
-#canvas1 {
-    position: absolute;
-    background: black;
-    height: 100%;
-    width: 100%;
-    top: 0;
-    left: 0;
+#formcontainer {
+    border-style: ridge;
+    border-color: lightcoral;
+    border-width: 5px;
+    object-position: ;
 }
