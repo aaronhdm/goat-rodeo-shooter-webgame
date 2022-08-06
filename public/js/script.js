@@ -17,6 +17,7 @@ let score = 0;
 
 var audio = new Audio('./images/sillychicken.mp3');
 var audio1 = new Audio('./images/throw.mp3');
+
 audio1.volume = 0.3
 audio.volume = 0.4;
 

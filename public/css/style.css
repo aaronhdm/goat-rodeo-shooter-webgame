@@ -10,15 +10,20 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
 }
 
 #formcontainer {
     position: fixed;
-    border-style: ridge;
-    border-color: lightcoral;
-    border-width: 5px;
     top: 0;
-    right:0;
+    right: 0;
+    width: 30vw;
 }
 
-
+#formControlRange {
+    position: fixed;
+    border-width: 5px;
+    top: 0;
+    left: 0;
+    width: 15vw;
+}
