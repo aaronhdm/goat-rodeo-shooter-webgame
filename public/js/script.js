@@ -3,22 +3,52 @@ const canvas = document.getElementById('canvas1');
 const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
+
+window.addEventListener('resize', function () {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
+
 let hue = 0;
 
 const particlesArray = [];
+const enemyArray = [];
 
 const keys = [];
 
 const player = {
     x: 200,
     y: 200,
-    width: 40,
-    height: 72,
+    width: 28,
+    height: 29,
     frameX: 0,
     frameY: 0,
     speed: 9,
     moving: false
 }
+
+class Enemy {
+    constructor() {
+        this.x = canvas.width - 72,
+            this.y = Math.random() * 500,
+            this.width = 28,
+            this.height = 29,
+            this.frameX = 0,
+            this.frameY = 1,
+            this.speed = Math.random() * 9 + 2,
+            this.moving = false
+    }
+    update() {
+        drawSprite(enemySprite, this.width * this.frameX, this.height * this.frameY, this.width, this.height, this.x, this.y, this.width, this.height);
+        this.x = this.x - this.speed;
+        // console.log(this.x)
+
+    }
+
+}
+
+
+// const enemy = new Enemy();
 
 const projectiles = [];
 class Projectile {
@@ -39,6 +69,7 @@ class Projectile {
     }
 
     update() {
+        // console.log(this.position);
         this.draw();
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
@@ -82,7 +113,10 @@ function handleParticles() {
 }
 
 const playerSprite = new Image();
-playerSprite.src = "images/chewie.png";
+playerSprite.src = "images/goat.png";
+
+const enemySprite = new Image();
+enemySprite.src = "images/goat.png";
 
 window.addEventListener('resize', function () {
     canvas.width = window.innerWidth;
@@ -159,6 +193,30 @@ function handlePlayerFrame() {
     }
 }
 
+function moveEnemyFrame() {
+
+    for (let i = 0; i < enemyArray.length; i++) {
+        if (enemyArray[i].frameX < 0) {
+            enemyArray[i].frameX++;
+            // console.log("Frame: " + enemy.frameX)
+        }
+        else if (enemyArray[i].frameX < 1) {
+            enemyArray[i].frameX++;
+            // console.log("Frame: " + enemy.frameX)
+        }
+        else if (enemyArray[i].frameX < 2) {
+            enemyArray[i].frameX++;
+            // console.log("Frame: " + enemy.frameX)
+        }
+        else if (enemyArray[i].frameX <= 3) {
+            enemyArray[i].frameX = 0;
+            // console.log("Frame: " + enemy.frameX)
+        }
+    }
+
+
+}
+
 let fps, fpsInterval, startTime, now, then, elapsed;
 
 function startAnimating(fps) {
@@ -167,6 +225,9 @@ function startAnimating(fps) {
     startTime = then;
     animate();
 }
+
+
+let enemyTimer = 0;
 
 function animate() {
 
@@ -180,10 +241,32 @@ function animate() {
         then = now - (elapsed % fpsInterval);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-        drawSprite(playerSprite, player.width * player.frameX, player.height * player.frameY, player.width, player.height, player.x, player.y, player.width, player.height)
+        drawSprite(playerSprite, player.width * player.frameX, player.height * player.frameY, player.width, player.height, player.x, player.y, player.width, player.height);
+        enemyArray.forEach((enemy, i) => {
+            enemy.update();
+            projectiles.forEach((projectile, j) => {
+                // console.log(projectile.y)
+                if (
+                    projectile.position.y - projectile.radius <= 
+                    enemy.y + enemy.height &&
+                    projectile.position.x + projectile.radius >=
+                    enemy.x && projectile.position.x - projectile.radius <=
+                    enemy.x
+                    ) {
+
+                    setTimeout(() => {
+                        enemyArray.splice(i, 1);
+                        projectiles.splice(j, i)
+                    }, 0);
+                }
+            });
+        });
+
+
         movePlayer();
         handleParticles();
         handlePlayerFrame();
+        moveEnemyFrame();
         projectiles.forEach((projectile, index) => {
             if (projectile.position.y + projectile.radius <= 0) {
                 setTimeout(() => {
@@ -196,6 +279,10 @@ function animate() {
 
         })
     }
+    if (enemyTimer % 100 === 0) {
+        enemyArray.push(new Enemy);
+    }
+    enemyTimer++;
 };
 
-startAnimating(30);
+startAnimating(60);
