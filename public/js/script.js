@@ -11,6 +11,8 @@ window.addEventListener('resize', function () {
 
 let hue = 0;
 
+let score = 0;
+
 const particlesArray = [];
 const enemyArray = [];
 
@@ -46,6 +48,29 @@ class Enemy {
     }
 
 }
+
+
+class Powerup {
+    constructor() {
+        this.x = canvas.width / 3;
+        this.y = canvas.height / 2;
+
+        this.radius = 10;
+    }
+    draw() {
+        ctx.fillStyle = 'hsl(' + hue + ', 100%, 50%)';
+        // ctx.fillStyle = 'red';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.closePath();
+    }
+    update() {
+        this.draw();
+    }
+
+}
+let powerup = [new Powerup()];
 
 
 // const enemy = new Enemy();
@@ -109,7 +134,7 @@ function handleParticles() {
             i--;
         }
     }
-    console.log(particlesArray);
+    // console.log(particlesArray);
 }
 
 const playerSprite = new Image();
@@ -229,6 +254,8 @@ function startAnimating(fps) {
 
 let enemyTimer = 0;
 
+let powerupStatus = true;
+
 function animate() {
 
     // ctx.clearRect(0,0, canvas.width, canvas.height);
@@ -241,32 +268,90 @@ function animate() {
         then = now - (elapsed % fpsInterval);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+
+
+        // DRAW PLAYER CHARACTER AT GAME START AND REFRESH AT EACH FRAME
         drawSprite(playerSprite, player.width * player.frameX, player.height * player.frameY, player.width, player.height, player.x, player.y, player.width, player.height);
+
+        // PROJECTILE AND ENEMY COLLISION DETECTION
         enemyArray.forEach((enemy, i) => {
             enemy.update();
             projectiles.forEach((projectile, j) => {
                 // console.log(projectile.y)
                 if (
-                    projectile.position.y - projectile.radius <= 
-                    enemy.y + enemy.height &&
-                    projectile.position.x + projectile.radius >=
-                    enemy.x && projectile.position.x - projectile.radius <=
-                    enemy.x
-                    ) {
-
+                    projectile.position.y - projectile.radius <= enemy.y + enemy.height &&
+                    projectile.position.x + projectile.radius >= enemy.x &&
+                    projectile.position.x - projectile.radius <= enemy.x
+                ) {
                     setTimeout(() => {
+                        score++;
+                        console.log(score)
                         enemyArray.splice(i, 1);
-                        projectiles.splice(j, i)
+                        i--;
+                        projectiles.splice(j, 1)
+                        j--
                     }, 0);
                 }
             });
         });
+        if (!powerupStatus && score % 10 == 0) {
+            powerup = [new Powerup()];
+            powerupStatus = true;
+            powerup[0].update();
+        }
+        if (powerupStatus) {
+            // DRAW POWERUP
+            powerup[0].update();
+        }
 
 
+        // PLAYER AND POWERUP COLLISION DETECTION
+        if (powerup) {
+            powerup.forEach(powerups => {
+                if (powerups.y - powerups.radius <= player.y + player.height &&
+                    powerups.x + powerups.radius >= player.x &&
+                    powerups.x - powerups.radius <= player.x) {
+                    console.log('IFFINBB');
+                    setTimeout(() => {
+                        powerup.splice(0, 1);
+                        powerupStatus = false;
+                        for (i = 0; i < 10; i++) {
+                            projectiles.push(new Projectile({
+                                position: {
+                                    x: player.x + player.height / 2,
+                                    y: player.y + player.height / 2,
+                                },
+                                velocity: {
+                                    x: 10,
+                                    y: 0,
+                                }
+                            })
+                            )
+                        }
+                        projectiles.forEach((bigshots) => {
+                            bigshots.radius = 15;
+                        });
+
+                    }, 0);
+                }
+            });
+
+        }
+
+
+
+        // console.log(player.y)
+
+
+        // MOVE PLAYER
         movePlayer();
+        // DRAW/HANDLE PARTICLES
         handleParticles();
+        // HANDLE WHICH FRAME THE USER CHARACTER SHOWS
         handlePlayerFrame();
+        // HANDLE WHICH FRAME THE ENEMY CHARACTERS SHOW
         moveEnemyFrame();
+        // DELETE SHOTS THAT GO PAST THE CAVAS EDGE
         projectiles.forEach((projectile, index) => {
             if (projectile.position.y + projectile.radius <= 0) {
                 setTimeout(() => {
@@ -279,10 +364,11 @@ function animate() {
 
         })
     }
-    if (enemyTimer % 100 === 0) {
+    // ENEMY SPAWN TIMER
+    if (enemyTimer % 10 === 0) {
         enemyArray.push(new Enemy);
     }
     enemyTimer++;
 };
-
-startAnimating(60);
+// GAME FPS SETTING
+startAnimating(30);
