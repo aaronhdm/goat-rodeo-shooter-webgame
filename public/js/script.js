@@ -15,11 +15,16 @@ let hue = 0;
 
 let score = 0;
 
+// AUDIO-------
+
 var audio = new Audio('./images/sillychicken.mp3');
 var audio1 = new Audio('./images/throw.mp3');
+var audio2 = new Audio('./images/hit.mp3');
 
-audio1.volume = 0.3
-audio.volume = 0.4;
+// AUDIO VOLUME CONTROL
+audio.volume = 0.2;
+audio1.volume = 0.2;
+audio2.volume = 0.4;
 
 
 
@@ -76,12 +81,14 @@ class Powerup {
         ctx.closePath();
     }
     update() {
-        this.powerupStatus = true;
+
         this.draw();
     }
 
 }
-let powerup = [new Powerup()];
+let powerupStatus = true;
+let powerup = [];
+powerup.push(new Powerup());
 
 
 // const enemy = new Enemy();
@@ -109,7 +116,7 @@ class Projectile {
         this.draw();
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
-        
+
     }
 }
 
@@ -293,13 +300,13 @@ function animate() {
         function RectCircleColliding(projectile, enemy) {
             var distX = Math.abs(projectile.position.x - enemy.x - enemy.width / 2);
             var distY = Math.abs(projectile.position.y - enemy.y - enemy.height / 2);
-        
+
             if (distX > (enemy.width / 2 + projectile.radius)) { return false; }
             if (distY > (enemy.height / 2 + projectile.radius)) { return false; }
-        
+
             if (distX <= (enemy.width / 2)) { return true; }
             if (distY <= (enemy.height / 2)) { return true; }
-        
+
             var dx = distX - enemy.w / 2;
             var dy = distY - enemy.h / 2;
             return (dx * dx + dy * dy <= (projectile.radius * projectile.radius));
@@ -315,104 +322,117 @@ function animate() {
                     // projectile.position.x - projectile.radius <= enemy.x
                     RectCircleColliding(projectile, enemy)
 
-                    
+
                 ) {
-                setTimeout(() => {
-                    score++;
-                    console.log(score)
-                    enemyArray.splice(i, 1);
-                    i--;
-                    projectiles.splice(j, 1)
-                    j--
-                }, 0);
-            }
+                    setTimeout(() => {
+                        score++;
+                        // console.log(score)
+                        enemyArray.splice(i, 1);
+                        i--;
+                        projectiles.splice(j, 1)
+                        j--;
+                        audio2.play();
+                    }, 0);
+                }
 
-        });
-    });
-    
-    // if (!powerupStatus && score % 5 == 0) {
-    //     powerup = [new Powerup()];
-        
-    // }
-    // if (powerupStatus) {
-    //     // DRAW POWERUP
-    //     powerup[0].update();
-    // }
-
-    function PlayerPowerupColliding(powerup, player) {
-        var distX = Math.abs(powerup.x - player.x - player.width / 2);
-        var distY = Math.abs(powerup.y - player.y - player.height / 2);
-    
-        if (distX > (player.width / 2 + powerup.radius)) { return false; }
-        if (distY > (player.height / 2 + powerup.radius)) { return false; }
-    
-        if (distX <= (player.width / 2)) { return true; }
-        if (distY <= (player.height / 2)) { return true; }
-    
-        var dx = distX - player.w / 2;
-        var dy = distY - player.h / 2;
-        return (dx * dx + dy * dy <= (powerup.radius * powerup.radius));
-    }
-    // PLAYER AND POWERUP COLLISION DETECTION
-    if (powerup) {
-        powerup.forEach(powerups => {
-            if (PlayerPowerupColliding(powerups, player)) {
-                console.log('IFFINBB');
-                setTimeout(() => {
-                    powerup.splice(0, 1);
-                    powerupStatus = false;
-                    console.log('IFFINBB');
-
-
-                }, 0);
-            }
+            });
         });
 
+        if (powerup.length) {
+            powerup[0].update();
+        }
+
+
+
+
+
+        function PlayerPowerupColliding(powerup, player) {
+            var distX = Math.abs(powerup.x - player.x - player.width / 2);
+            var distY = Math.abs(powerup.y - player.y - player.height / 2);
+
+            if (distX > (player.width / 2 + powerup.radius)) { return false; }
+            if (distY > (player.height / 2 + powerup.radius)) { return false; }
+
+            if (distX <= (player.width / 2)) { return true; }
+            if (distY <= (player.height / 2)) { return true; }
+
+            var dx = distX - player.w / 2;
+            var dy = distY - player.h / 2;
+            return (dx * dx + dy * dy <= (powerup.radius * powerup.radius));
+        }
+        // PLAYER AND POWERUP COLLISION DETECTION
+        if (powerup) {
+            powerup.forEach(powerups => {
+                if (PlayerPowerupColliding(powerups, player)) {
+                    setTimeout(() => {
+                        powerup.splice(0, 1);
+                        powerupStatus = false;
+                        console.log('IFFINBB');
+                        console.log(powerup);
+                        console.log(powerupStatus)
+                        function stateChange(powerupStatus) {
+                            setTimeout(function () {
+                                if (!powerupStatus) {
+                                    console.log("can engage new powerup now");
+                                    powerup.push(new Powerup());
+                                    powerup[0].update();
+                                }
+                            }, 30000);
+                        }
+                        stateChange();
+
+
+
+
+                    }, 0);
+                }
+            });
+
+        }
+
+
+
+        // console.log(player.y)
+
+
+        // MOVE PLAYER
+        movePlayer();
+        // DRAW/HANDLE PARTICLES
+        handleParticles();
+        // HANDLE WHICH FRAME THE USER CHARACTER SHOWS
+        handlePlayerFrame();
+        // HANDLE WHICH FRAME THE ENEMY CHARACTERS SHOW
+        moveEnemyFrame();
+        // DELETE SHOTS THAT GO PAST THE CAVAS EDGE
+        projectiles.forEach((projectile, index) => {
+            if (projectile.position.y + projectile.radius <= 0) {
+                setTimeout(() => {
+                    projectiles.splice(index, 1)
+                }, 0);
+            }
+            else {
+                projectile.update();
+            }
+
+        })
+        enemyArray.forEach((enemy, index) => {
+            if (enemy.x + enemy.width <= 0) {
+                // console.log(enemyArray);
+                setTimeout(() => {
+                    enemyArray.splice(index, 1)
+                }, 0);
+            }
+            else {
+                // enemy.update();
+            }
+
+        })
     }
-
-
-
-    // console.log(player.y)
-
-
-    // MOVE PLAYER
-    movePlayer();
-    // DRAW/HANDLE PARTICLES
-    handleParticles();
-    // HANDLE WHICH FRAME THE USER CHARACTER SHOWS
-    handlePlayerFrame();
-    // HANDLE WHICH FRAME THE ENEMY CHARACTERS SHOW
-    moveEnemyFrame();
-    // DELETE SHOTS THAT GO PAST THE CAVAS EDGE
-    projectiles.forEach((projectile, index) => {
-        if (projectile.position.y + projectile.radius <= 0) {
-            setTimeout(() => {
-                projectiles.splice(index, 1)
-            }, 0);
-        }
-        else {
-            projectile.update();
-        }
-
-    })
-    enemyArray.forEach((enemy, index) => {
-        if (enemy.x + enemy.width <= 0) {
-            console.log(enemyArray);
-            setTimeout(() => {
-                enemyArray.splice(index, 1)
-            }, 0);
-        }
-        else {
-            // enemy.update();
-        }
-
-    })
-}
-// ENEMY SPAWN TIMER
-if (enemyTimer % 10 === 0) {
-    enemyArray.push(new Enemy);
-}
-enemyTimer++;
+    // ENEMY SPAWN TIMER
+    if (enemyTimer % 10 === 0) {
+        enemyArray.push(new Enemy);
+    }
+    enemyTimer++;
 };
 // GAME FPS SETTING
 startAnimating(30);
