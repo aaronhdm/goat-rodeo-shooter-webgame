@@ -1,11 +1,25 @@
 // Canvas Setup
 const canvas = document.getElementById('canvas1');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
 const displayScore = document.getElementById('points');
 const displayEscapes = document.getElementById('escapes');
+const gameState = document.getElementById('pauseGame');
+
+let gamePaused = false;
+
+let ctx = canvas.getContext('2d');
+gameState.addEventListener('click', () => {
+    if (!gamePaused) {
+        gamePaused = true;
+        audio.pause();
+    } else {
+        gamePaused = false;
+        startAnimating(30);
+        audio.play();
+    }
+});
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
 window.addEventListener('resize', function () {
     canvas.width = window.innerWidth;
@@ -46,21 +60,19 @@ const player = {
 
 class Enemy {
     constructor() {
-        this.x = canvas.width - 72,
+        this.x = 1500,
             this.y = Math.random() * 500,
             this.width = 28,
             this.height = 29,
             this.frameX = 0,
             this.frameY = 1,
-            this.speed = Math.random() * 9 + 2,
-            this.moving = false
+            this.speed = Math.random() * 9 + 2
     }
     update() {
         drawSprite(enemySprite, this.width * this.frameX, this.height * this.frameY, this.width, this.height, this.x, this.y, this.width, this.height);
         this.x = this.x - this.speed;
         // console.log(this.x)
     }
-
 }
 
 class Powerup {
@@ -83,11 +95,10 @@ class Powerup {
         this.draw();
     }
 }
+
 let powerupStatus = true;
 let powerup = [];
 powerup.push(new Powerup());
-
-// const enemy = new Enemy();
 
 const projectiles = [];
 class Projectile {
@@ -162,7 +173,7 @@ window.addEventListener('resize', function () {
 });
 
 const background = new Image();
-background.src = "images/background.png"
+background.src = "images/court.png"
 
 function drawSprite(img, sX, sY, sW, sH, dX, dY, dW, dH) {
     ctx.drawImage(img, sX, sY, sW, sH, dX, dY, dW, dH)
@@ -269,8 +280,10 @@ let enemyTimer = 0;
 
 function animate() {
 
-    // ctx.clearRect(0,0, canvas.width, canvas.height);
-    requestAnimationFrame(animate);
+    if (!gamePaused) {
+        requestAnimationFrame(animate);
+    }
+
     hue++;
     // console.log(hue);
     now = Date.now();
@@ -314,8 +327,9 @@ function animate() {
                         displayScore.innerHTML = score;
                         // console.log(score)
                         enemyArray.splice(i, 1);
-                        i--;
                         projectiles.splice(j, 1)
+
+                        i--;
                         j--;
                         audio2.play();
                     }, 0);
@@ -362,7 +376,7 @@ function animate() {
                                     powerup[0].update();
                                     player.speed = 9;
                                 }
-                            }, 30000);
+                            }, 15000);
                         }
                         stateChange();
 
@@ -383,33 +397,44 @@ function animate() {
         // HANDLE WHICH FRAME THE ENEMY CHARACTERS SHOW
         moveEnemyFrame();
         // DELETE SHOTS THAT GO PAST THE CAVAS EDGE
-        projectiles.forEach((projectile, index) => {
-            if (projectile.position.y + projectile.radius <= 0) {
-                setTimeout(() => {
-                    projectiles.splice(index, 1)
-                }, 0);
-            }
-            else {
-                projectile.update();
-            }
 
+        let deleteBall = new Promise(function (myResolve, myReject) {
+            projectiles.forEach((projectile, index) => {
+
+                if (projectile.position.y + projectile.radius <= 0) {
+
+                    setTimeout(() => {
+                        projectiles.splice(index, 1)
+                        index--;
+                    }, 0);
+                }
+                else {
+                    projectile.update();
+                }
+
+            })
         })
-        enemyArray.forEach((enemy, index) => {
-            if (enemy.x + enemy.width <= 0) {
-                // console.log(enemyArray);
-                setTimeout(() => {
-                    enemyArray.splice(index, 1)
+        deleteBall.then(console.log("???ONCE OVER THE PROJECTILE ARRAY???"))
+
+        let deleteEnemy = new Promise(function (myResolve, myReject) {
+            // "Producing Code" (May take some time)
+            enemyArray.forEach((enemy, index) => {
+
+                if (enemy.x + enemy.width <= 0) {
                     escapees++;
+                    enemyArray.splice(index, 1)
+
                     console.log("Animals escaped: " + escapees)
                     displayEscapes.innerHTML = escapees;
-                }, 0);
-            }
-            else {
-                // enemy.update();
-            }
 
+                    index--;
+                    myResolve();
+                }
+            });
         })
+        deleteEnemy.then(console.log("???ONCE OVER THE ENEMY ARRAY???"))
     }
+
     // ENEMY SPAWN TIMER
     if (enemyTimer % 10 === 0) {
         enemyArray.push(new Enemy);

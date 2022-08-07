@@ -27,3 +27,13 @@ body {
     color: red;
     top: 0;
 }
+
+#pauseGame {
+    position: fixed;
+    color: green;
+    top: 0;
+    right: 0;
+    font-weight: 900;
+}
+
+
