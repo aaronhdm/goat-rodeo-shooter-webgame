@@ -1,24 +1,70 @@
-<div class="container" id="formcontainer">
-    <form>
-        <div class="form-group">
-            <label for="exampleInputEmail1">Email address</label>
-            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-        </div>
-        <div class="form-group">
-            <label for="exampleInputPassword1">Password</label>
-            <input type="password" class="form-control" id="exampleInputPassword1">
-        </div>
-        <div class="form-group form-check">
-            <input type="checkbox" class="form-check-input" id="exampleCheck1">
-            <label class="form-check-label" for="exampleCheck1">Check me out</label>
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
-</div>
-<form>
+<nav class="navbar navbar-expand-lg" id="navbarCustom">
+    <a class="navbar-brand" href="#">Courts &#38; Revival</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+        aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="#">How to Play</a>
+            </li>
+        </ul>
 
-    <div class="form-group">
-        <input type="range" class="form-control-range" id="formControlRange" value="0">
+
+        <ul class="nav navbar-nav ml-auto" id="loginSignup">
+            <li class="nav-item">
+                <div class="navbar-nav ml-auto action-buttons">
+                    <div class="nav-item dropdown">
+                        <a href="#" data-toggle="dropdown" class="btn btn-primary dropdown-toggle sign-up-btn"
+                            aria-expanded="false">Login</a>
+                        <div class="dropdown-menu action-form">
+                            <form action="/examples/actions/confirmation.php" method="post">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="Username" required="required">
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" class="form-control" placeholder="Password"
+                                        required="required">
+                                </div>
+                                <input type="submit" class="btn btn-primary btn-block" value="Login">
+                                <div class="text-center mt-2">
+                                    <a href="#">Forgot Your password?</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                
+                    <div class="nav-item dropdown">
+                        <a href="#" data-toggle="dropdown" class="btn btn-primary dropdown-toggle sign-up-btn"
+                            aria-expanded="false">Sign up</a>
+                        <div class="dropdown-menu action-form">
+                            <form action="/examples/actions/confirmation.php" method="post">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="Username" required="required">
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" class="form-control" placeholder="Password"
+                                        required="required">
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" class="form-control" placeholder="Confirm Password"
+                                        required="required">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-check-label"><input type="checkbox" required="required"> I accept
+                                        the <a href="#">Terms &amp; Conditions</a></label>
+                                </div>
+                                <input type="submit" class="btn btn-primary btn-block" value="Sign up">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
     </div>
-</form>
+</nav>
+
+<div class="form-group">
+    <input type="range" class="form-control-range" id="formControlRange" value="0">
+</div>

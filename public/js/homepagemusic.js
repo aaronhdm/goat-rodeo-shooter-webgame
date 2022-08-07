@@ -10,3 +10,9 @@ setInterval(function () {
     audioLanding.pause();
 }
 }, 1000);
+
+const startGame = document.getElementById('startGame');
+const gameSite = 'http://localhost:3001/game'
+startGame.addEventListener('click', function() {
+    window.location = gameSite;
+})

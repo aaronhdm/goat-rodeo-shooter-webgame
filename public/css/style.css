@@ -1,4 +1,4 @@
-* {
+ * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -20,10 +20,10 @@ body {
     width: 30vw;
 }
 
-#formControlRange {
-    position: fixed;
-    border-width: 5px;
+
+
+#score {
+    position: absolute;
+    color: red;
     top: 0;
-    left: 0;
-    width: 15vw;
 }
