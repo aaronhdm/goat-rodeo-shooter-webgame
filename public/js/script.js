@@ -9,7 +9,24 @@ window.addEventListener('resize', function () {
     canvas.height = window.innerHeight;
 });
 
+
+
 let hue = 0;
+
+let score = 0;
+
+// AUDIO-------
+
+var audio = new Audio('./images/sillychicken.mp3');
+var audio1 = new Audio('./images/throw.mp3');
+var audio2 = new Audio('./images/hit.mp3');
+
+// AUDIO VOLUME CONTROL
+audio.volume = 0.2;
+audio1.volume = 0.2;
+audio2.volume = 0.4;
+
+
 
 const particlesArray = [];
 const enemyArray = [];
@@ -48,6 +65,32 @@ class Enemy {
 }
 
 
+class Powerup {
+    constructor() {
+        this.x = canvas.width / 2 - player.width;
+        this.y = canvas.height / 2;
+
+        this.radius = 10;
+    }
+    draw() {
+        ctx.fillStyle = 'hsl(' + hue + ', 100%, 50%)';
+        // ctx.fillStyle = 'red';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.closePath();
+    }
+    update() {
+
+        this.draw();
+    }
+
+}
+let powerupStatus = true;
+let powerup = [];
+powerup.push(new Powerup());
+
+
 // const enemy = new Enemy();
 
 const projectiles = [];
@@ -73,6 +116,7 @@ class Projectile {
         this.draw();
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
+
     }
 }
 
@@ -109,7 +153,7 @@ function handleParticles() {
             i--;
         }
     }
-    console.log(particlesArray);
+    // console.log(particlesArray);
 }
 
 const playerSprite = new Image();
@@ -134,11 +178,18 @@ window.addEventListener('keydown', function (e) {
     keys[e.key] = true;
     // player.moving = true;
     if (keys[" "]) {
+
+        // PLAY GAME MUSIC ON FIRST BUTTON PRESS AND WHOOSH SOUND ON ALL PRESSES
+
+        audio1.play();
+
+
+        audio.play();
+        audio.loop = true;
+
         for (let i = 0; i < 10; i++) {
             particlesArray.push(new Particle());
         }
-
-
         projectiles.push(new Projectile({
             position: {
                 x: player.x + player.height / 2,
@@ -164,7 +215,6 @@ function movePlayer() {
         player.y -= player.speed;
         player.frameY = 3;
         player.moving = true;
-
     }
     if (keys["ArrowLeft"] && player.x > 0) {
         player.x -= player.speed;
@@ -229,6 +279,8 @@ function startAnimating(fps) {
 
 let enemyTimer = 0;
 
+
+
 function animate() {
 
     // ctx.clearRect(0,0, canvas.width, canvas.height);
@@ -241,32 +293,117 @@ function animate() {
         then = now - (elapsed % fpsInterval);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+
+
+        // DRAW PLAYER CHARACTER AT GAME START AND REFRESH AT EACH FRAME
         drawSprite(playerSprite, player.width * player.frameX, player.height * player.frameY, player.width, player.height, player.x, player.y, player.width, player.height);
+        function RectCircleColliding(projectile, enemy) {
+            var distX = Math.abs(projectile.position.x - enemy.x - enemy.width / 2);
+            var distY = Math.abs(projectile.position.y - enemy.y - enemy.height / 2);
+
+            if (distX > (enemy.width / 2 + projectile.radius)) { return false; }
+            if (distY > (enemy.height / 2 + projectile.radius)) { return false; }
+
+            if (distX <= (enemy.width / 2)) { return true; }
+            if (distY <= (enemy.height / 2)) { return true; }
+
+            var dx = distX - enemy.w / 2;
+            var dy = distY - enemy.h / 2;
+            return (dx * dx + dy * dy <= (projectile.radius * projectile.radius));
+        }
+        // PROJECTILE AND ENEMY COLLISION DETECTION
         enemyArray.forEach((enemy, i) => {
             enemy.update();
             projectiles.forEach((projectile, j) => {
                 // console.log(projectile.y)
                 if (
-                    projectile.position.y - projectile.radius <= 
-                    enemy.y + enemy.height &&
-                    projectile.position.x + projectile.radius >=
-                    enemy.x && projectile.position.x - projectile.radius <=
-                    enemy.x
-                    ) {
+                    // projectile.position.y - projectile.radius <= enemy.y + enemy.height &&
+                    // projectile.position.x + projectile.radius >= enemy.x &&
+                    // projectile.position.x - projectile.radius <= enemy.x
+                    RectCircleColliding(projectile, enemy)
 
+
+                ) {
                     setTimeout(() => {
+                        score++;
+                        // console.log(score)
                         enemyArray.splice(i, 1);
-                        projectiles.splice(j, i)
+                        i--;
+                        projectiles.splice(j, 1)
+                        j--;
+                        audio2.play();
                     }, 0);
                 }
+
             });
         });
 
+        if (powerup.length) {
+            powerup[0].update();
+        }
 
+
+
+
+
+        function PlayerPowerupColliding(powerup, player) {
+            var distX = Math.abs(powerup.x - player.x - player.width / 2);
+            var distY = Math.abs(powerup.y - player.y - player.height / 2);
+
+            if (distX > (player.width / 2 + powerup.radius)) { return false; }
+            if (distY > (player.height / 2 + powerup.radius)) { return false; }
+
+            if (distX <= (player.width / 2)) { return true; }
+            if (distY <= (player.height / 2)) { return true; }
+
+            var dx = distX - player.w / 2;
+            var dy = distY - player.h / 2;
+            return (dx * dx + dy * dy <= (powerup.radius * powerup.radius));
+        }
+        // PLAYER AND POWERUP COLLISION DETECTION
+        if (powerup) {
+            powerup.forEach(powerups => {
+                if (PlayerPowerupColliding(powerups, player)) {
+                    setTimeout(() => {
+                        powerup.splice(0, 1);
+                        powerupStatus = false;
+                        console.log('IFFINBB');
+                        console.log(powerup);
+                        console.log(powerupStatus)
+                        function stateChange(powerupStatus) {
+                            setTimeout(function () {
+                                if (!powerupStatus) {
+                                    console.log("can engage new powerup now");
+                                    powerup.push(new Powerup());
+                                    powerup[0].update();
+                                }
+                            }, 30000);
+                        }
+                        stateChange();
+
+
+
+
+                    }, 0);
+                }
+            });
+
+        }
+
+
+
+        // console.log(player.y)
+
+
+        // MOVE PLAYER
         movePlayer();
+        // DRAW/HANDLE PARTICLES
         handleParticles();
+        // HANDLE WHICH FRAME THE USER CHARACTER SHOWS
         handlePlayerFrame();
+        // HANDLE WHICH FRAME THE ENEMY CHARACTERS SHOW
         moveEnemyFrame();
+        // DELETE SHOTS THAT GO PAST THE CAVAS EDGE
         projectiles.forEach((projectile, index) => {
             if (projectile.position.y + projectile.radius <= 0) {
                 setTimeout(() => {
@@ -278,11 +415,24 @@ function animate() {
             }
 
         })
+        enemyArray.forEach((enemy, index) => {
+            if (enemy.x + enemy.width <= 0) {
+                // console.log(enemyArray);
+                setTimeout(() => {
+                    enemyArray.splice(index, 1)
+                }, 0);
+            }
+            else {
+                // enemy.update();
+            }
+
+        })
     }
-    if (enemyTimer % 100 === 0) {
+    // ENEMY SPAWN TIMER
+    if (enemyTimer % 10 === 0) {
         enemyArray.push(new Enemy);
     }
     enemyTimer++;
 };
-
-startAnimating(60);
+// GAME FPS SETTING
+startAnimating(30);
