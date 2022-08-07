@@ -4,29 +4,29 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+const displayScore = document.getElementById('points');
+const displayEscapes = document.getElementById('escapes');
+
 window.addEventListener('resize', function () {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 });
 
-
-
 let hue = 0;
 
 let score = 0;
+let escapees = 0;
 
 // AUDIO-------
 
-var audio = new Audio('./images/sillychicken.mp3');
+var audio = new Audio('./images/gamemusic.mp3');
 var audio1 = new Audio('./images/throw.mp3');
 var audio2 = new Audio('./images/hit.mp3');
 
 // AUDIO VOLUME CONTROL
-audio.volume = 0.2;
-audio1.volume = 0.2;
-audio2.volume = 0.4;
-
-
+// audio.volume = 0.4;
+// audio1.volume = 0.4;
+// audio2.volume = 0.4;
 
 const particlesArray = [];
 const enemyArray = [];
@@ -59,11 +59,9 @@ class Enemy {
         drawSprite(enemySprite, this.width * this.frameX, this.height * this.frameY, this.width, this.height, this.x, this.y, this.width, this.height);
         this.x = this.x - this.speed;
         // console.log(this.x)
-
     }
 
 }
-
 
 class Powerup {
     constructor() {
@@ -84,12 +82,10 @@ class Powerup {
 
         this.draw();
     }
-
 }
 let powerupStatus = true;
 let powerup = [];
 powerup.push(new Powerup());
-
 
 // const enemy = new Enemy();
 
@@ -116,7 +112,6 @@ class Projectile {
         this.draw();
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
-
     }
 }
 
@@ -141,7 +136,6 @@ class Particle {
             this.size -= 0.1;
         }
     }
-
 }
 
 function handleParticles() {
@@ -180,10 +174,7 @@ window.addEventListener('keydown', function (e) {
     if (keys[" "]) {
 
         // PLAY GAME MUSIC ON FIRST BUTTON PRESS AND WHOOSH SOUND ON ALL PRESSES
-
         audio1.play();
-
-
         audio.play();
         audio.loop = true;
 
@@ -263,8 +254,6 @@ function moveEnemyFrame() {
             // console.log("Frame: " + enemy.frameX)
         }
     }
-
-
 }
 
 let fps, fpsInterval, startTime, now, then, elapsed;
@@ -276,10 +265,7 @@ function startAnimating(fps) {
     animate();
 }
 
-
 let enemyTimer = 0;
-
-
 
 function animate() {
 
@@ -293,7 +279,6 @@ function animate() {
         then = now - (elapsed % fpsInterval);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-
 
         // DRAW PLAYER CHARACTER AT GAME START AND REFRESH AT EACH FRAME
         drawSprite(playerSprite, player.width * player.frameX, player.height * player.frameY, player.width, player.height, player.x, player.y, player.width, player.height);
@@ -322,10 +307,11 @@ function animate() {
                     // projectile.position.x - projectile.radius <= enemy.x
                     RectCircleColliding(projectile, enemy)
 
-
                 ) {
                     setTimeout(() => {
                         score++;
+
+                        displayScore.innerHTML = score;
                         // console.log(score)
                         enemyArray.splice(i, 1);
                         i--;
@@ -341,10 +327,6 @@ function animate() {
         if (powerup.length) {
             powerup[0].update();
         }
-
-
-
-
 
         function PlayerPowerupColliding(powerup, player) {
             var distX = Math.abs(powerup.x - player.x - player.width / 2);
@@ -370,19 +352,19 @@ function animate() {
                         console.log('IFFINBB');
                         console.log(powerup);
                         console.log(powerupStatus)
+                        player.speed = 25;
+                        console.log(player.speed);
                         function stateChange(powerupStatus) {
                             setTimeout(function () {
                                 if (!powerupStatus) {
                                     console.log("can engage new powerup now");
                                     powerup.push(new Powerup());
                                     powerup[0].update();
+                                    player.speed = 9;
                                 }
                             }, 30000);
                         }
                         stateChange();
-
-
-
 
                     }, 0);
                 }
@@ -390,10 +372,7 @@ function animate() {
 
         }
 
-
-
         // console.log(player.y)
-
 
         // MOVE PLAYER
         movePlayer();
@@ -420,6 +399,9 @@ function animate() {
                 // console.log(enemyArray);
                 setTimeout(() => {
                     enemyArray.splice(index, 1)
+                    escapees++;
+                    console.log("Animals escaped: " + escapees)
+                    displayEscapes.innerHTML = escapees;
                 }, 0);
             }
             else {
