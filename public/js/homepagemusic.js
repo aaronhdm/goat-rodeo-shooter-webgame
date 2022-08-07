@@ -1,6 +1,5 @@
 var audioLanding = new Audio('./images/iwasjoking.mp3');
 
-
 let landingPageVolume = document.getElementById('formControlRange');
 
 setInterval(function () {

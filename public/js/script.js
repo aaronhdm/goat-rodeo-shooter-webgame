@@ -50,8 +50,8 @@ const keys = [];
 const player = {
     x: 200,
     y: 200,
-    width: 28,
-    height: 29,
+    width: 21,
+    height: 27,
     frameX: 0,
     frameY: 0,
     speed: 9,
@@ -62,8 +62,8 @@ class Enemy {
     constructor() {
         this.x = 1500,
             this.y = Math.random() * 500,
-            this.width = 28,
-            this.height = 29,
+            this.width = 21,
+            this.height = 27,
             this.frameX = 0,
             this.frameY = 1,
             this.speed = Math.random() * 9 + 2
@@ -162,10 +162,10 @@ function handleParticles() {
 }
 
 const playerSprite = new Image();
-playerSprite.src = "images/goat.png";
+playerSprite.src = "images/goat2.png";
 
 const enemySprite = new Image();
-enemySprite.src = "images/goat.png";
+enemySprite.src = "images/goat2.png";
 
 window.addEventListener('resize', function () {
     canvas.width = window.innerWidth;
