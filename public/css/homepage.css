@@ -7,13 +7,15 @@ body {
     padding: 0;
     margin: 0;
     text-decoration: none;
+    overflow: hidden;
 }
 
 #backgroundImage {
     background-size: contain;
-    height: 50%;
+    margin-top: 25%;
+    height: 50%; 
     width: 50%;
-    animation: rotation 5s infinite linear;
+    /* animation: rotation 5s infinite linear; */
     vertical-align: center;
     
 }
@@ -31,11 +33,13 @@ body {
 }
 
 #formControlRange {
-    position: absolute;
+    /* position: absolute;
     border-width: 5px;
     bottom: 0;
-    right: 0;
+    right: 0; */
     width: 15vw;
+    margin-top: 3vh;
+    margin-left: 50%;
 }
 
 .dropdown {
@@ -47,11 +51,11 @@ body {
 
     margin: 0;
     padding: 0;
-    position: absolute;
+    /* position: absolute;
     top: 50%;
-    left: 50%;
-    -ms-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
+    right: 0;
+    -ms-transform: translate(0, -50%);
+    transform: translate(0, -50%); */
 
     height: 25vh;
     width: 50vw;

@@ -31,6 +31,8 @@ canvas.height = window.innerHeight;
 let hue = 0;
 
 let score = 0;
+let finalScore = 0;
+
 let enemyLevel = 20;
 setInterval(
     function () {
@@ -45,7 +47,7 @@ setInterval(
                 enemyLevel = 5;
             }
             else if (score > 100 && enemyLevel == 5) {
-                enemyLevel = 1;
+                enemyLevel = 0;
             }
             console.log("enemy level " + enemyLevel);
         }
@@ -82,8 +84,8 @@ const player = {
 
 class Enemy {
     constructor() {
-        this.x = Math.floor(Math.random() * 1500 + 1000),
-            this.y = Math.floor(Math.random() * 500) ,
+        this.x = canvas.width,
+            this.y = Math.floor(Math.random() * canvas.height) ,
             this.width = 63,
             this.height = 81,
             this.frameX = 0,
@@ -312,7 +314,7 @@ function animate() {
         console.log("STOP")
         fpsInterval = undefined;
         setInterval(function () {
-            if (canvas.width > 0) {
+            if (canvas.width > 0 && canvas.height > 0) {
                 canvas.width--;
                 canvas.height--;
 
@@ -321,6 +323,8 @@ function animate() {
                 ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 
                 drawSprite(playerSprite, player.width * player.frameX, player.height * player.frameY, player.width, player.height, player.x, player.y, player.width, player.height);
+
+                finalScore = score;
             }
 
         }, 1000);
@@ -450,7 +454,7 @@ function animate() {
         let deleteBall = new Promise(function (myResolve, myReject) {
             projectiles.forEach((projectile, index) => {
 
-                if (projectile.position.x + projectile.radius >= 1000) {
+                if (projectile.position.x + projectile.radius >= canvas.width) {
 
                     setTimeout(() => {
                         projectiles.splice(index, 1)
