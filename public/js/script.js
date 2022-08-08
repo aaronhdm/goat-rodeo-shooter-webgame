@@ -2,10 +2,14 @@
 // Canvas Setup
 const canvas = document.getElementById('canvas1');
 const displayScore = document.getElementById('points');
-const displayEscapes = document.getElementById('escapes');
+const displayscoreNegativeModifier = document.getElementById('scoreNegativeModifier');
 const gameState = document.getElementById('pauseGame');
 
 let gamePaused = false;
+
+let enemyLevel = 30;
+
+
 
 let ctx = canvas.getContext('2d');
 gameState.addEventListener('click', () => {
@@ -30,7 +34,23 @@ window.addEventListener('resize', function () {
 let hue = 0;
 
 let score = 0;
-let escapees = 0;
+setInterval(
+    function () {
+        if (score > 1 && enemyLevel > 10) {
+            if (score > 50) {
+                enemyLevel = 20;
+            }
+            if (score > 100) {
+                enemyLevel = 10;
+            }
+            if (score > 150) {
+                enemyLevel = 5;
+            }
+            console.log("enemy level " + enemyLevel);
+        }
+    }, 500
+);
+let penalty = 0;
 
 // AUDIO-------
 
@@ -51,8 +71,8 @@ const keys = [];
 const player = {
     x: 200,
     y: 200,
-    width: 21,
-    height: 27,
+    width: 63,
+    height: 81,
     frameX: 0,
     frameY: 0,
     speed: 9,
@@ -63,8 +83,8 @@ class Enemy {
     constructor() {
         this.x = 1500,
             this.y = Math.random() * 500,
-            this.width = 21,
-            this.height = 27,
+            this.width = 63,
+            this.height = 81,
             this.frameX = 0,
             this.frameY = 1,
             this.speed = Math.random() * 9 + 2
@@ -163,10 +183,10 @@ function handleParticles() {
 }
 
 const playerSprite = new Image();
-playerSprite.src = "images/goat2.png";
+playerSprite.src = "images/goatBig.png";
 
 const enemySprite = new Image();
-enemySprite.src = "images/goat2.png";
+enemySprite.src = "images/goatBig.png";
 
 window.addEventListener('resize', function () {
     canvas.width = window.innerWidth;
@@ -174,7 +194,7 @@ window.addEventListener('resize', function () {
 });
 
 const background = new Image();
-background.src = "images/court.png"
+background.src = "images/grass.jpg"
 
 function drawSprite(img, sX, sY, sW, sH, dX, dY, dW, dH) {
     ctx.drawImage(img, sX, sY, sW, sH, dX, dY, dW, dH)
@@ -204,7 +224,6 @@ window.addEventListener('keydown', function (e) {
             }
         })
         )
-
     }
 });
 
@@ -308,36 +327,40 @@ function animate() {
 
             var dx = distX - enemy.w / 2;
             var dy = distY - enemy.h / 2;
-            return (dx * dx + dy * dy <= (projectile.radius * projectile.radius));
+            return Promise.resolve(dx * dx + dy * dy <= (projectile.radius * projectile.radius));
         }
         // PROJECTILE AND ENEMY COLLISION DETECTION
-        enemyArray.forEach((enemy, i) => {
-            enemy.update();
-            projectiles.forEach((projectile, j) => {
-                // console.log(projectile.y)
-                if (
-                    // projectile.position.y - projectile.radius <= enemy.y + enemy.height &&
-                    // projectile.position.x + projectile.radius >= enemy.x &&
-                    // projectile.position.x - projectile.radius <= enemy.x
-                    RectCircleColliding(projectile, enemy)
 
-                ) {
-                    setTimeout(() => {
-                        score++;
+        let enemyHitByBallDetection = new Promise(function (Resolve, Reject) {
+            enemyArray.forEach((enemy, i) => {
+                enemy.update();
+                projectiles.forEach((projectile, j) => {
+                    // console.log(projectile.y)
+                    if (
+                        RectCircleColliding(projectile, enemy)
 
-                        displayScore.innerHTML = score;
-                        // console.log(score)
-                        enemyArray.splice(i, 1);
-                        projectiles.splice(j, 1)
+                    ) {
+                        setTimeout(() => {
+                            score++;
 
-                        i--;
-                        j--;
-                        audio2.play();
-                    }, 0);
-                }
+                            displayScore.innerHTML = score;
+                            // console.log(score)
+                            enemyArray.splice(i, 1);
+                            projectiles.splice(j, 1)
 
+                            i--;
+                            j--;
+                            audio2.play();
+                            Resolve();
+                        }, 0);
+                    }
+
+                });
             });
         });
+
+        enemyHitByBallDetection.then();
+
 
         if (powerup.length) {
             powerup[0].update();
@@ -402,38 +425,41 @@ function animate() {
         let deleteBall = new Promise(function (myResolve, myReject) {
             projectiles.forEach((projectile, index) => {
 
-                if (projectile.position.y + projectile.radius <= 0) {
+                if (projectile.position.x + projectile.radius >= 1000) {
 
                     setTimeout(() => {
                         projectiles.splice(index, 1)
                         index--;
+                        console.log(projectiles);
                     }, 0);
+                    myResolve();
                 }
                 else {
                     projectile.update();
+                    myResolve();
                 }
 
             })
         })
-        deleteBall.then(console.log("???ONCE OVER THE PROJECTILE ARRAY???"))
+        deleteBall.then();
 
         let deleteEnemy = new Promise(function (myResolve, myReject) {
             // "Producing Code" (May take some time)
             enemyArray.forEach((enemy, index) => {
 
                 if (enemy.x + enemy.width <= 0) {
-                    escapees++;
+                    penalty++;
                     enemyArray.splice(index, 1)
-
-                    console.log("Animals escaped: " + escapees)
-                    displayEscapes.innerHTML = escapees;
+                    console.log(enemyArray);
+                    // console.log("Animals escaped: " + penalty)
+                    displayscoreNegativeModifier.innerHTML = penalty;
 
                     index--;
                     myResolve();
                 }
             });
         })
-        deleteEnemy.then(console.log("???ONCE OVER THE ENEMY ARRAY???"))
+        deleteEnemy.then();
     }
 
     // ENEMY SPAWN TIMER
