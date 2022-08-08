@@ -2,10 +2,14 @@
 // Canvas Setup
 const canvas = document.getElementById('canvas1');
 const displayScore = document.getElementById('points');
-const displayEscapes = document.getElementById('escapes');
+const displayscoreNegativeModifier = document.getElementById('scoreNegativeModifier');
 const gameState = document.getElementById('pauseGame');
 
 let gamePaused = false;
+
+
+
+
 
 let ctx = canvas.getContext('2d');
 gameState.addEventListener('click', () => {
@@ -22,15 +26,32 @@ gameState.addEventListener('click', () => {
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-window.addEventListener('resize', function () {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-});
+
 
 let hue = 0;
 
 let score = 0;
-let escapees = 0;
+let enemyLevel = 20;
+setInterval(
+    function () {
+        if (score > 1 && enemyLevel > 5) {
+            if (score > 10 && enemyLevel == 20) {
+                enemyLevel = 15;
+            }
+            else if (score > 25 && enemyLevel == 15) {
+                enemyLevel = 10;
+            }
+            else if (score > 50 && enemyLevel == 10) {
+                enemyLevel = 5;
+            }
+            else if (score > 100 && enemyLevel == 5) {
+                enemyLevel = 1;
+            }
+            console.log("enemy level " + enemyLevel);
+        }
+    }, 500
+);
+let penalty = 0;
 
 // AUDIO-------
 
@@ -51,8 +72,8 @@ const keys = [];
 const player = {
     x: 200,
     y: 200,
-    width: 21,
-    height: 27,
+    width: 63,
+    height: 81,
     frameX: 0,
     frameY: 0,
     speed: 9,
@@ -61,10 +82,10 @@ const player = {
 
 class Enemy {
     constructor() {
-        this.x = 1500,
-            this.y = Math.random() * 500,
-            this.width = 21,
-            this.height = 27,
+        this.x = Math.floor(Math.random() * 1500 + 1000),
+            this.y = Math.floor(Math.random() * 500) ,
+            this.width = 63,
+            this.height = 81,
             this.frameX = 0,
             this.frameY = 1,
             this.speed = Math.random() * 9 + 2
@@ -163,10 +184,10 @@ function handleParticles() {
 }
 
 const playerSprite = new Image();
-playerSprite.src = "images/goat2.png";
+playerSprite.src = "images/goatBig.png";
 
 const enemySprite = new Image();
-enemySprite.src = "images/goat2.png";
+enemySprite.src = "images/goatBig.png";
 
 window.addEventListener('resize', function () {
     canvas.width = window.innerWidth;
@@ -174,7 +195,7 @@ window.addEventListener('resize', function () {
 });
 
 const background = new Image();
-background.src = "images/court.png"
+background.src = "images/grass.jpg"
 
 function drawSprite(img, sX, sY, sW, sH, dX, dY, dW, dH) {
     ctx.drawImage(img, sX, sY, sW, sH, dX, dY, dW, dH)
@@ -204,7 +225,6 @@ window.addEventListener('keydown', function (e) {
             }
         })
         )
-
     }
 });
 
@@ -282,7 +302,31 @@ let enemyTimer = 0;
 function animate() {
 
     if (!gamePaused) {
+        window.addEventListener('resize', function () {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
         requestAnimationFrame(animate);
+    }
+    if (score >= 0 && penalty > score) {
+        console.log("STOP")
+        fpsInterval = undefined;
+        setInterval(function () {
+            if (canvas.width > 0) {
+                canvas.width--;
+                canvas.height--;
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+
+                drawSprite(playerSprite, player.width * player.frameX, player.height * player.frameY, player.width, player.height, player.x, player.y, player.width, player.height);
+            }
+
+        }, 1000);
+        setTimeout(function () {
+            gamePaused = true;
+        }, 5000);
     }
 
     hue++;
@@ -308,36 +352,40 @@ function animate() {
 
             var dx = distX - enemy.w / 2;
             var dy = distY - enemy.h / 2;
-            return (dx * dx + dy * dy <= (projectile.radius * projectile.radius));
+            return Promise.resolve(dx * dx + dy * dy <= (projectile.radius * projectile.radius));
         }
         // PROJECTILE AND ENEMY COLLISION DETECTION
-        enemyArray.forEach((enemy, i) => {
-            enemy.update();
-            projectiles.forEach((projectile, j) => {
-                // console.log(projectile.y)
-                if (
-                    // projectile.position.y - projectile.radius <= enemy.y + enemy.height &&
-                    // projectile.position.x + projectile.radius >= enemy.x &&
-                    // projectile.position.x - projectile.radius <= enemy.x
-                    RectCircleColliding(projectile, enemy)
 
-                ) {
-                    setTimeout(() => {
-                        score++;
+        let enemyHitByBallDetection = new Promise(function (Resolve, Reject) {
+            enemyArray.forEach((enemy, i) => {
+                enemy.update();
+                projectiles.forEach((projectile, j) => {
+                    // console.log(projectile.y)
+                    if (
+                        RectCircleColliding(projectile, enemy)
 
-                        displayScore.innerHTML = score;
-                        // console.log(score)
-                        enemyArray.splice(i, 1);
-                        projectiles.splice(j, 1)
+                    ) {
+                        setTimeout(() => {
+                            score++;
 
-                        i--;
-                        j--;
-                        audio2.play();
-                    }, 0);
-                }
+                            displayScore.innerHTML = score;
+                            // console.log(score)
+                            enemyArray.splice(i, 1);
+                            projectiles.splice(j, 1)
 
+                            i--;
+                            j--;
+                            audio2.play();
+                            Resolve();
+                        }, 0);
+                    }
+
+                });
             });
         });
+
+        enemyHitByBallDetection.then();
+
 
         if (powerup.length) {
             powerup[0].update();
@@ -402,42 +450,45 @@ function animate() {
         let deleteBall = new Promise(function (myResolve, myReject) {
             projectiles.forEach((projectile, index) => {
 
-                if (projectile.position.y + projectile.radius <= 0) {
+                if (projectile.position.x + projectile.radius >= 1000) {
 
                     setTimeout(() => {
                         projectiles.splice(index, 1)
                         index--;
+                        console.log(projectiles);
                     }, 0);
+                    myResolve();
                 }
                 else {
                     projectile.update();
+                    myResolve();
                 }
 
             })
         })
-        deleteBall.then(console.log("???ONCE OVER THE PROJECTILE ARRAY???"))
+        deleteBall.then();
 
         let deleteEnemy = new Promise(function (myResolve, myReject) {
             // "Producing Code" (May take some time)
             enemyArray.forEach((enemy, index) => {
 
                 if (enemy.x + enemy.width <= 0) {
-                    escapees++;
+                    penalty = penalty + 5;
                     enemyArray.splice(index, 1)
-
-                    console.log("Animals escaped: " + escapees)
-                    displayEscapes.innerHTML = escapees;
+                    console.log(enemyArray);
+                    // console.log("Animals escaped: " + penalty)
+                    displayscoreNegativeModifier.innerHTML = penalty;
 
                     index--;
                     myResolve();
                 }
             });
         })
-        deleteEnemy.then(console.log("???ONCE OVER THE ENEMY ARRAY???"))
+        deleteEnemy.then();
     }
 
     // ENEMY SPAWN TIMER
-    if (enemyTimer % 10 === 0) {
+    if (enemyTimer % enemyLevel === 0) {
         enemyArray.push(new Enemy);
     }
     enemyTimer++;

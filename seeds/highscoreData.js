@@ -2,17 +2,13 @@ const { Highscore } = require('../models');
 
 const highscoredata = [
   {
-    name: 'Waddles',
     score: 300,
+    user_id: 1
   },
   {
-    name: 'Gonkers',
-    score: 200,
-  },
-  {
-    name: 'Soos',
-    score: 100,
-  },
+    score: 400,
+    user_id: 2
+  }
 ];
 
 const seedHighscores = () => Highscore.bulkCreate(highscoredata);
