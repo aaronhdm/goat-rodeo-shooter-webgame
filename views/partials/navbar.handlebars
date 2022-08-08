@@ -18,7 +18,7 @@
                         <a href="#" data-toggle="dropdown" class="btn btn-primary dropdown-toggle sign-up-btn"
                             aria-expanded="false">Login</a>
                         <div class="dropdown-menu action-form">
-                            <form action="/examples/actions/confirmation.php" method="post">
+                            <form action="/examples/actions/confirmation.php" class='login-form' method="post">
                                 <div class="form-group">
                                     <input type="text" class="form-control" id='userName' placeholder="Username" required="required">
                                 </div>
@@ -38,12 +38,15 @@
                         <a href="#" data-toggle="dropdown" class="btn btn-primary dropdown-toggle sign-up-btn"
                             aria-expanded="false">Sign up</a>
                         <div class="dropdown-menu action-form">
-                            <form action="/examples/actions/confirmation.php" method="post">
+                            <form action="/examples/actions/confirmation.php" class='signup-form'method="post">
                                 <div class="form-group">
-                                    <input type="text" class="form-control" placeholder="Username" required="required">
+                                    <input type="email" class="form-control" id="emailSignup" placeholder="Email" required="required">
                                 </div>
                                 <div class="form-group">
-                                    <input type="password" class="form-control" placeholder="Password"
+                                    <input type="text" class="form-control" id="userNameSignup" placeholder="Username" required="required">
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" class="form-control" id="passwordSignup" placeholder="Password"
                                         required="required">
                                 </div>
                                 <div class="form-group">
