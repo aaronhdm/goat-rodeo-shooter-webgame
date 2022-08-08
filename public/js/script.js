@@ -7,7 +7,7 @@ const gameState = document.getElementById('pauseGame');
 
 let gamePaused = false;
 
-let enemyLevel = 30;
+
 
 
 
@@ -26,25 +26,26 @@ gameState.addEventListener('click', () => {
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-window.addEventListener('resize', function () {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-});
+
 
 let hue = 0;
 
 let score = 0;
+let enemyLevel = 20;
 setInterval(
     function () {
-        if (score > 1 && enemyLevel > 10) {
-            if (score > 50) {
-                enemyLevel = 20;
+        if (score > 1 && enemyLevel > 5) {
+            if (score > 10 && enemyLevel == 20) {
+                enemyLevel = 15;
             }
-            if (score > 100) {
+            else if (score > 25 && enemyLevel == 15) {
                 enemyLevel = 10;
             }
-            if (score > 150) {
+            else if (score > 50 && enemyLevel == 10) {
                 enemyLevel = 5;
+            }
+            else if (score > 100 && enemyLevel == 5) {
+                enemyLevel = 1;
             }
             console.log("enemy level " + enemyLevel);
         }
@@ -81,8 +82,8 @@ const player = {
 
 class Enemy {
     constructor() {
-        this.x = 1500,
-            this.y = Math.random() * 500,
+        this.x = Math.floor(Math.random() * 1500 + 1000),
+            this.y = Math.floor(Math.random() * 500) ,
             this.width = 63,
             this.height = 81,
             this.frameX = 0,
@@ -301,7 +302,31 @@ let enemyTimer = 0;
 function animate() {
 
     if (!gamePaused) {
+        window.addEventListener('resize', function () {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
         requestAnimationFrame(animate);
+    }
+    if (score >= 0 && penalty > score) {
+        console.log("STOP")
+        fpsInterval = undefined;
+        setInterval(function () {
+            if (canvas.width > 0) {
+                canvas.width--;
+                canvas.height--;
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+
+                drawSprite(playerSprite, player.width * player.frameX, player.height * player.frameY, player.width, player.height, player.x, player.y, player.width, player.height);
+            }
+
+        }, 1000);
+        setTimeout(function () {
+            gamePaused = true;
+        }, 5000);
     }
 
     hue++;
@@ -448,7 +473,7 @@ function animate() {
             enemyArray.forEach((enemy, index) => {
 
                 if (enemy.x + enemy.width <= 0) {
-                    penalty++;
+                    penalty = penalty + 5;
                     enemyArray.splice(index, 1)
                     console.log(enemyArray);
                     // console.log("Animals escaped: " + penalty)
@@ -463,7 +488,7 @@ function animate() {
     }
 
     // ENEMY SPAWN TIMER
-    if (enemyTimer % 10 === 0) {
+    if (enemyTimer % enemyLevel === 0) {
         enemyArray.push(new Enemy);
     }
     enemyTimer++;

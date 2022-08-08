@@ -1,6 +1,6 @@
 body {
     /* background-image: url('https://cdn.dribbble.com/users/6140019/screenshots/15980925/media/d627e44760f2486413558689cfbc82ff.gif'); */
-    background-image: url('https://global-uploads.webflow.com/5b44edefca321a1e2d0c2aa6/5fbc2c7401b3ed06c6afcfb0_Dimensions-Sports-Dodgeball-Dimensions.svg'); 
+    /* background-image: url('https://global-uploads.webflow.com/5b44edefca321a1e2d0c2aa6/5fbc2c7401b3ed06c6afcfb0_Dimensions-Sports-Dodgeball-Dimensions.svg');  */
     background-size: cover;
     height: 100vh;
     width: 100vw;
@@ -8,6 +8,23 @@ body {
     margin: 0;
     text-decoration: none;
 }
+
+#backgroundImage {
+    background-size: contain;
+    height: 50%;
+    width: 50%;
+    animation: rotation 5s infinite linear;
+    vertical-align: center;
+    
+}
+@keyframes rotation {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(359deg);
+    }
+  }
 
 #loginSignup {
     margin-right: 10vw;
