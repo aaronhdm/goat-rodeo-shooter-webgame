@@ -1,0 +1,64 @@
+body {
+    /* background-image: url('https://cdn.dribbble.com/users/6140019/screenshots/15980925/media/d627e44760f2486413558689cfbc82ff.gif'); */
+    /* background-image: url('https://global-uploads.webflow.com/5b44edefca321a1e2d0c2aa6/5fbc2c7401b3ed06c6afcfb0_Dimensions-Sports-Dodgeball-Dimensions.svg');  */
+    background-size: cover;
+    height: 100vh;
+    width: 100vw;
+    padding: 0;
+    margin: 0;
+    text-decoration: none;
+}
+
+#backgroundImage {
+    background-size: contain;
+    height: 50%;
+    width: 50%;
+    animation: rotation 5s infinite linear;
+    vertical-align: center;
+    
+}
+@keyframes rotation {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(359deg);
+    }
+  }
+
+#loginSignup {
+    margin-right: 10vw;
+}
+
+#formControlRange {
+    position: absolute;
+    border-width: 5px;
+    bottom: 0;
+    right: 0;
+    width: 15vw;
+}
+
+.dropdown {
+    margin-left: 15px;
+}
+
+#startGame {
+    background-color: rgba(0, 0, 0, 0.5);
+
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+
+    height: 25vh;
+    width: 50vw;
+
+}
+
+#navbarCustom {
+background-color: #d16f77;
+color: #d16f77;
+}

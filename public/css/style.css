@@ -1,4 +1,4 @@
-* {
+ * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -10,16 +10,37 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
 }
 /* Login container CSS */
 #formcontainer {
     position: fixed;
     top: 0;
+<<<<<<< HEAD
     right:0;
     size: 100px;
     margin-right: 75px;
     margin-top: 50px;
     
+=======
+    right: 0;
+    width: 30vw;
+}
+
+
+
+#score {
+    position: absolute;
+    color: red;
+    top: 0;
+}
+
+#pauseGame {
+    position: fixed;
+    color: green;
+    top: 0;
+    right: 0;
+    font-weight: 900;
 }
 
 @media (min-width: 768px) {
