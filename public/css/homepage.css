@@ -27,16 +27,22 @@ body {
   }
 
 #loginSignup {
-    margin-right: 10vw;
+    margin-right: 5%;
 }
 
-#formControlRange {
+#slider {
+   margin-left: 10%;
+   text-align: center;
+
+}
+
+/* #formControlRange {
     position: absolute;
     border-width: 5px;
     bottom: 0;
     right: 0;
     width: 15vw;
-}
+} */
 
 .dropdown {
     margin-left: 15px;
@@ -55,10 +61,12 @@ body {
 
     height: 25vh;
     width: 50vw;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 2em;
 
 }
 
 #navbarCustom {
 background-color: #d16f77;
-color: #d16f77;
+color: white;
 }
