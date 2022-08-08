@@ -12,10 +12,17 @@ body {
     align-items: center;
     overflow: hidden;
 }
-
+/* Login container CSS */
 #formcontainer {
     position: fixed;
     top: 0;
+<<<<<<< HEAD
+    right:0;
+    size: 100px;
+    margin-right: 75px;
+    margin-top: 50px;
+    
+=======
     right: 0;
     width: 30vw;
 }
@@ -36,4 +43,9 @@ body {
     font-weight: 900;
 }
 
+@media (min-width: 768px) {
+    #formcontainer{
+        width:500px;
+    }
+}
 
