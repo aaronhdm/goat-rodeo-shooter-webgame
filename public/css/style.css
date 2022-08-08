@@ -11,14 +11,20 @@ body {
     justify-content: center;
     align-items: center;
 }
-
+/* Login container CSS */
 #formcontainer {
     position: fixed;
-    border-style: ridge;
-    border-color: lightcoral;
-    border-width: 5px;
     top: 0;
     right:0;
+    size: 100px;
+    margin-right: 75px;
+    margin-top: 50px;
+    
 }
 
+@media (min-width: 768px) {
+    #formcontainer{
+        width:500px;
+    }
+}
 
