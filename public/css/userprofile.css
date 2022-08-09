@@ -11,7 +11,7 @@ nav {
    display: flex;
    flex-direction: row;
    color: white;
-   background-color: #d16f77;
+   background-color: maroon;
 }
 
 #right {
@@ -21,7 +21,7 @@ nav {
 }
 
 #slider {
-   margin-left: 20px;
+   margin-left: 50px;
 }
 
 
