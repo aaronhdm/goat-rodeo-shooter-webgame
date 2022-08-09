@@ -35,7 +35,7 @@ let finalScore = 0;
 let enemyLevel = 20;
 setInterval(
     function () {
-        if (score > 1 && enemyLevel > 5) {
+        if (score > 1 && enemyLevel > 0) {
             if (score > 10 && enemyLevel == 20) {
                 enemyLevel = 15;
             }
@@ -52,6 +52,12 @@ setInterval(
         }
     }, 500
 );
+
+window.document.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+      window.location.reload();
+    }
+});
 let penalty = 0;
 
 // AUDIO-------
@@ -87,7 +93,7 @@ class Enemy {
             this.width = 63,
             this.height = 81,
             this.y = this.height + Math.random() * (canvas.height - this.height * 2),
-            
+
             this.frameX = 0,
             this.frameY = 1,
             this.speed = Math.random() * 9 + 2
@@ -305,7 +311,12 @@ function animate() {
     endgame: if (score >= 0 && penalty > score) {
         console.log("STOP")
         gamePaused = true;
-        saveScore(score, user_id);
+        if(score > 0) {
+            saveScore(score, user_id);
+        }
+        ctx.font = "30px Arial";
+        ctx.fillText("Game Over! Press ENTER to play again!", (canvas.width / 4) - 100, 200);
+        audio.pause();
         break endgame;
     }
 
