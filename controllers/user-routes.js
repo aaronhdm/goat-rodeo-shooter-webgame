@@ -3,19 +3,20 @@ const { User } = require('../models');
 
 
 // CREATE new user
-router.post('/', async (req, res) => {
+router.post('/users', async (req, res) => {
     try {
         const userData = await User.create({
-            email: req.body.username,
+            email: req.body.email,
             username: req.body.username,
             password: req.body.password,
         });
 
-        req.session.save(() => {
-            req.session.loggedIn = true;
+        // req.session.save(() => {
+        //     req.session.loggedIn = true;
 
-            res.status(200).json(userData);
-        });
+        //     res.status(200).json(userData);
+        // });
+        console.log("NEW USER");
     } catch (err) {
         console.log(err);
         res.status(500).json(err);
@@ -27,7 +28,7 @@ router.post('/login', async (req, res) => {
     try {
         const userData = await User.findOne({
             where: {
-                username: req.body.email,
+                username: req.body.username,
             },
         });
 

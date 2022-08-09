@@ -8,7 +8,7 @@ const loginFormHandler = async (event) => {
     if (userName && password) {
         const response = await fetch('/api/users/login', {
             method: 'POST',
-            body: JSON.stringify({ username, password }),
+            body: JSON.stringify({ userName, password }),
             headers: { 'Content-Type': 'application/json' },
         });
 
@@ -23,12 +23,12 @@ const loginFormHandler = async (event) => {
 const signupFormHandler = async (event) => {
     event.preventDefault();
 
-    const email = document.querySelector('emailSignup').value.trim();
-    const username = document.querySelector('userNameSignup').value.trim();
-    const password = document.querySelector('passwordSignup').value.trim();
+    let email = document.getElementById('emailSignup').value;
+    let username = document.getElementById('userNameSignup').value;
+    let password = document.getElementById('passwordSignup').value;
 
     if (username && email && password) {
-        const response = await fetch('/api/users', {
+        const response = await fetch('/users', {
             method: 'POST',
             body: JSON.stringify({ username, email, password }),
             headers: { 'Content-Type': 'application/json' },
