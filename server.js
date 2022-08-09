@@ -7,7 +7,7 @@ const api = require('./controllers/api/index');
 
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.JAWSDB_URL || process.env.PORT || 3001;
 
 const hbs = exphbs.create({});
 
