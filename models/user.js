@@ -18,12 +18,6 @@ User.init(
     },
     email: {
       type: DataTypes.STRING
-    },
-    kills: {
-      type: DataTypes.INTEGER
-    },
-    deaths: {
-      type: DataTypes.INTEGER
     }
   },
   {

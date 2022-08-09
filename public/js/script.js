@@ -7,7 +7,7 @@ const gameState = document.getElementById('pauseGame');
 
 let gamePaused = false;
 
-
+let user_id = 1;
 
 
 
@@ -31,6 +31,8 @@ canvas.height = window.innerHeight;
 let hue = 0;
 
 let score = 0;
+let finalScore = 0;
+
 let enemyLevel = 20;
 setInterval(
     function () {
@@ -45,7 +47,7 @@ setInterval(
                 enemyLevel = 5;
             }
             else if (score > 100 && enemyLevel == 5) {
-                enemyLevel = 1;
+                enemyLevel = 0;
             }
             console.log("enemy level " + enemyLevel);
         }
@@ -82,10 +84,11 @@ const player = {
 
 class Enemy {
     constructor() {
-        this.x = Math.floor(Math.random() * 1500 + 1000),
-            this.y = Math.floor(Math.random() * 500) ,
+        this.x = canvas.width,
             this.width = 63,
             this.height = 81,
+            this.y = this.height + Math.random() * (canvas.height - this.height * 2),
+            
             this.frameX = 0,
             this.frameY = 1,
             this.speed = Math.random() * 9 + 2
@@ -298,8 +301,14 @@ function startAnimating(fps) {
 }
 
 let enemyTimer = 0;
-
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 function animate() {
+    endgame: if (score >= 0 && penalty > score) {
+        console.log("STOP")
+        gamePaused = true;
+        saveScore(score, user_id);
+        break endgame;
+    }
 
     if (!gamePaused) {
         window.addEventListener('resize', function () {
@@ -308,26 +317,7 @@ function animate() {
         });
         requestAnimationFrame(animate);
     }
-    if (score >= 0 && penalty > score) {
-        console.log("STOP")
-        fpsInterval = undefined;
-        setInterval(function () {
-            if (canvas.width > 0) {
-                canvas.width--;
-                canvas.height--;
 
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-
-                drawSprite(playerSprite, player.width * player.frameX, player.height * player.frameY, player.width, player.height, player.x, player.y, player.width, player.height);
-            }
-
-        }, 1000);
-        setTimeout(function () {
-            gamePaused = true;
-        }, 5000);
-    }
 
     hue++;
     // console.log(hue);
@@ -450,7 +440,7 @@ function animate() {
         let deleteBall = new Promise(function (myResolve, myReject) {
             projectiles.forEach((projectile, index) => {
 
-                if (projectile.position.x + projectile.radius >= 1000) {
+                if (projectile.position.x + projectile.radius >= canvas.width) {
 
                     setTimeout(() => {
                         projectiles.splice(index, 1)
@@ -493,5 +483,22 @@ function animate() {
     }
     enemyTimer++;
 };
+
+let fpsSetting = 30;
 // GAME FPS SETTING
-startAnimating(30);
+startAnimating(fpsSetting);
+
+
+function saveScore(score, user_id) {
+    fetch(`/api/userscorepage`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            score,
+            user_id,
+        }),
+    });
+    console.log("SCORE SAVED");
+}
