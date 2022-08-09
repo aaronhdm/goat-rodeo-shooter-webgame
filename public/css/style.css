@@ -12,13 +12,8 @@ body {
     align-items: center;
     overflow: hidden;
 }
+/* Login container CSS */
 
-#formcontainer {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 30vw;
-}
 
 #score {
     position: absolute;
@@ -34,4 +29,9 @@ body {
     font-weight: 900;
 }
 
+@media (min-width: 768px) {
+    #formcontainer{
+        width:500px;
+    }
+}
 

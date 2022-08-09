@@ -19,28 +19,37 @@ body {
     vertical-align: center;
     
 }
-@keyframes rotation {
+/* @keyframes rotation {
     from {
       transform: rotate(0deg);
     }
     to {
       transform: rotate(359deg);
     }
-  }
+  } */
 
 #loginSignup {
-    margin-right: 10vw;
+    margin-right: 5%;
+}
+#slider {
+   margin-left: 10%;
+   text-align: center;
+
 }
 
 #formControlRange {
-    /* position: absolute;
+    position: absolute;
+
     border-width: 5px;
     bottom: 0;
-    right: 0; */
+    right: 0; 
     width: 15vw;
+
     margin-top: 3vh;
     margin-left: 50%;
 }
+
+
 
 .dropdown {
     margin-left: 15px;
@@ -59,10 +68,12 @@ body {
 
     height: 25vh;
     width: 50vw;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 2em;
 
 }
 
 #navbarCustom {
 background-color: #d16f77;
-color: #d16f77;
+color: white;
 }
