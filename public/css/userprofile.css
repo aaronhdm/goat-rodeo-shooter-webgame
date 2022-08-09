@@ -1,0 +1,52 @@
+* {
+    font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
+}
+
+body {
+   display: flex;
+   flex-direction: column;
+}
+
+nav {
+   display: flex;
+   flex-direction: row;
+   color: white;
+   background-color: #d16f77;
+}
+
+#right {
+   display: flex;
+   flex-direction: row;
+   margin-left: 55%;
+}
+
+#slider {
+   margin-left: 20px;
+}
+
+
+#main {
+   display: flex;
+   flex-direction: column;
+   width: 65%;
+   height: 50%;
+   margin-top: 10%;
+   margin-left: 15%;
+   padding: 25px;
+   background-color: rgba(0, 0, 0, 0.5);
+   color: white;
+   text-align: center;
+   border-radius: 15px;
+}
+
+.start {
+   width: 40%;
+   text-align: center;
+   background-color: rgba(0, 0, 0, 0.5);
+   color: white;
+   margin-top: 5%;
+   margin-left: 27%;
+   cursor: pointer;
+   padding: 10px;
+   border-radius: 10px;
+}

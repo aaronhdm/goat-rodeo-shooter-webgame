@@ -1,39 +1,41 @@
-<link rel="stylesheet" href="/css/homepage.css">
-<style>
-    * {
-        font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
-    }
+<link rel="stylesheet" href="/css/userprofile.css">
 
-{{!-- add style here --}}
-
-</style>
 <nav class="navbar navbar-expand-lg" id="navbarCustom">
-    <a class="navbar-brand" style="color: white" href="#">Courts &#38; Revival</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
-        aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNavDropdown">
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link" style="color: white" href="http://localhost:3001/howtoplay">How to Play</a>
-            </li>
-        </ul>
+        <a class="navbar-brand" style="color: white" href="#">Courts &#38; Revival</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+            aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" style="color: white" href="http://localhost:3001/howtoplay">How to Play</a>
+                </li>
+            </ul>
 
-        <button class="btn btn-primary" id="logout" type="submit"> Log Out </button>
+            <div id="right">
+                <button class="btn btn-primary" id="logout" type="submit"> Log Out </button>
 
-        <div class="form-group" id="slider">
-            <h5>Volume</h5>
-            <input type="range" class="form-control-range" id="formControlRange" value="0" min="0" max="1" step="0.01">
+                <div class="form-group" id="slider">
+                    <h5>Volume</h5>
+                    <input type="range" class="form-control-range" id="formControlRange" value="0" min="0" max="1"
+                        step="0.01">
+                </div>
+            </div>
+
         </div>
-    </div>
-</nav>
+    </nav>
 
-<main>
-    <h3> {{User.username}} </h3>
-    <p> {{User.email}} </p>
-    <h3> Player History </h3>
-    <ul>
-        <li> Kills: {{User.kills}} Deaths:{{User.deaths}} </li>
-    </ul>
-</main>
+    <main>
+        <div id="main">
+            <h3> {{User.username}} </h3>
+            <p> {{User.email}} </p>
+            <h3> Player History </h3>
+            <ul>
+                <li> Kills: {{User.kills}} Deaths:{{User.deaths}} </li>
+            </ul>
+        </div>
+    </main>
+    <div>
+        <button type="submit" class="btn btn-primary start"> Start </button>
+    </div>
