@@ -31,33 +31,31 @@ router.post('/login', async (req, res) => {
                 username: req.body.username,
             },
         });
-        console.log(req.body.username);
 
-        // if (!userData) {
-        //     res
-        //         .status(400)
-        //         .json({ message: 'Incorrect email or password. Please try again.' });
-        //     return;
-        // }
+        if (!userData) {
+            res
+                .status(400)
+                .json({ message: 'Incorrect email or password. Please try again.' });
+            return;
+        }
 
+        const validPassword = await userData.checkPassword(req.body.password);
 
-        // const validPassword = await userData.checkPassword(req.body.password);
+        if (!validPassword) {
+            res
+                .status(400)
+                .json({ message: 'Incorrect email or password. Please try again!' });
+            return;
+        }
 
-        // if (!validPassword) {
-        //     res
-        //         .status(400)
-        //         .json({ message: 'Incorrect email or password. Please try again!' });
-        //     return;
-        // }
+        req.session.save(() => {
+            req.session.loggedIn = true;
 
-        // req.session.save(() => {
-        //     req.session.loggedIn = true;
+            res
+                .status(200)
+                .json({ user: dbUserData, message: 'You are now logged in!' });
 
-        //     res
-        //         .status(200)
-        //         .json({ user: dbUserData, message: 'You are now logged in!' });
-
-        // });
+        });
     } catch (err) {
         console.log(err);
         res.status(500).json(err);
