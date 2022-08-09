@@ -29,3 +29,9 @@ const viewHighscoreSite = 'http://localhost:3001/api/userscorepage'
 viewHighscore.addEventListener('click', function() {
     window.location = viewHighscoreSite;
 })
+
+const title = document.getElementById('title');
+const titleSite = 'http://localhost:3001/#'
+title.addEventListener('click', function() {
+    window.location = titleSite;
+})
