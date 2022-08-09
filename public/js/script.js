@@ -1,4 +1,3 @@
-// My file is not changing so i am doing this
 // Canvas Setup
 const canvas = document.getElementById('canvas1');
 const displayScore = document.getElementById('points');
