@@ -72,6 +72,36 @@ body {
     box-shadow: 0px 0px 0px 10px maroon;
 }
 
+#howtoplay {
+    background-color: maroon;
+    margin-top: 20px;
+    border-color: maroon;
+    height: 25vh;
+    width: 50vw;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 2em;
+}
+
+#howtoplay:hover {
+    background-color: maroon;
+    box-shadow: 0px 0px 0px 10px maroon;
+}
+
+#viewHighscore {
+    background-color: maroon;
+    margin-top: 20px;
+    border-color: maroon;
+    height: 25vh;
+    width: 50vw;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 2em;
+}
+
+#viewHighscore:hover {
+    background-color: maroon;
+    box-shadow: 0px 0px 0px 10px maroon;
+}
+
 #navbarCustom {
 background-color: maroon;
 color: white;

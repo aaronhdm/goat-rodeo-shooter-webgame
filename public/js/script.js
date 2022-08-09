@@ -477,7 +477,7 @@ function animate() {
     }
 
     // ENEMY SPAWN TIMER
-    if (enemyTimer % enemyLevel === 0) {
+    if (enemyTimer % 200 === 0) {
         enemyArray.push(new Enemy);
     }
     enemyTimer++;
