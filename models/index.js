@@ -24,29 +24,4 @@ Highscore.belongsTo(User, {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 module.exports = { Highscore, User };

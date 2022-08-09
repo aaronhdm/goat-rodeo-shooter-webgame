@@ -7,7 +7,7 @@ const gameState = document.getElementById('pauseGame');
 
 let gamePaused = false;
 
-
+let user_id = 1;
 
 
 
@@ -85,9 +85,10 @@ const player = {
 class Enemy {
     constructor() {
         this.x = canvas.width,
-            this.y = Math.floor(Math.random() * canvas.height) ,
             this.width = 63,
             this.height = 81,
+            this.y = this.height + Math.random() * (canvas.height - this.height * 2),
+            
             this.frameX = 0,
             this.frameY = 1,
             this.speed = Math.random() * 9 + 2
@@ -300,8 +301,14 @@ function startAnimating(fps) {
 }
 
 let enemyTimer = 0;
-
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 function animate() {
+    endgame: if (score >= 0 && penalty > score) {
+        console.log("STOP")
+        gamePaused = true;
+        saveScore(score, user_id);
+        break endgame;
+    }
 
     if (!gamePaused) {
         window.addEventListener('resize', function () {
@@ -310,28 +317,7 @@ function animate() {
         });
         requestAnimationFrame(animate);
     }
-    if (score >= 0 && penalty > score) {
-        console.log("STOP")
-        fpsInterval = undefined;
-        setInterval(function () {
-            if (canvas.width > 0 && canvas.height > 0) {
-                canvas.width--;
-                canvas.height--;
 
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-
-                drawSprite(playerSprite, player.width * player.frameX, player.height * player.frameY, player.width, player.height, player.x, player.y, player.width, player.height);
-
-                finalScore = score;
-            }
-
-        }, 1000);
-        setTimeout(function () {
-            gamePaused = true;
-        }, 5000);
-    }
 
     hue++;
     // console.log(hue);
@@ -497,5 +483,22 @@ function animate() {
     }
     enemyTimer++;
 };
+
+let fpsSetting = 30;
 // GAME FPS SETTING
-startAnimating(30);
+startAnimating(fpsSetting);
+
+
+function saveScore(score, user_id) {
+    fetch(`/api/userscorepage`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            score,
+            user_id,
+        }),
+    });
+    console.log("SCORE SAVED");
+}
