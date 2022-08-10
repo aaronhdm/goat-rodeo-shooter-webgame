@@ -523,5 +523,5 @@ function saveScore(score, user_id) {
             user_id,
         }),
     });
-    // console.log("SCORE SAVED");
+    console.log("SCORE SAVED");
 }

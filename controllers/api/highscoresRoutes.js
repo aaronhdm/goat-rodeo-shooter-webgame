@@ -42,7 +42,7 @@ router.post('/', async (req, res) => {
   });
   
   // if the SCORE is successfully created, the new response will be returned as json
-  // res.status(200).json(scoreData)
+  res.status(200).json(scoreData)
   console.log(scoreData)
   // res.render('userscorespage', {
   //   userScores,
