@@ -6,16 +6,17 @@ body {
     margin: 0;
     text-decoration: none;
     overflow: hidden;
-    background-color: black;
-    color: white;
+    /* background-color: black; */
+    color: #D8D9D0;
     font-size: medium;
+    background-image: url(/images/grass.jpg);
 }
 
 #backgroundImage {
     background-size: cover;
     margin-top: 15%;
     margin-left: 10%;
-    animation: rotation 10s infinite linear;
+    animation: rotation 20s infinite linear;
     vertical-align: center;
 }
 
@@ -57,9 +58,9 @@ body {
 }
 
 #startGame {
-    background-color: maroon;
+    background-color: #8C513B;
     margin-top: 20px;
-    border-color: maroon;
+    border-color: #8C513B;
     height: 25vh;
     width: 50vw;
     font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
@@ -68,14 +69,14 @@ body {
 }
 
 #startGame:hover {
-    background-color: maroon;
-    box-shadow: 0px 0px 0px 10px maroon;
+    background-color: #8C513B;
+    box-shadow: 0px 0px 0px 10px #8C513B;
 }
 
 #howtoplay {
-    background-color: maroon;
+    background-color: #8C513B;
     margin-top: 20px;
-    border-color: maroon;
+    border-color: #8C513B;
     height: 25vh;
     width: 50vw;
     font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
@@ -83,14 +84,14 @@ body {
 }
 
 #howtoplay:hover {
-    background-color: maroon;
-    box-shadow: 0px 0px 0px 10px maroon;
+    background-color: #8C513B;
+    box-shadow: 0px 0px 0px 10px #8C513B;
 }
 
 #viewHighscore {
-    background-color: maroon;
+    background-color: #8C513B;
     margin-top: 20px;
-    border-color: maroon;
+    border-color: #8C513B;
     height: 25vh;
     width: 50vw;
     font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
@@ -98,11 +99,11 @@ body {
 }
 
 #viewHighscore:hover {
-    background-color: maroon;
-    box-shadow: 0px 0px 0px 10px maroon;
+    background-color: #8C513B;
+    box-shadow: 0px 0px 0px 10px #8C513B;
 }
 
 #navbarCustom {
-background-color: maroon;
-color: white;
+background-color: #8C513B;
+color: #D8D9D0;
 }
