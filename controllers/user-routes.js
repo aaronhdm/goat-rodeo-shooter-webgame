@@ -26,8 +26,8 @@ router.post('/users', async (req, res) => {
 // --------------------------------
 
 
-let thisUserData;
 
+let users = [];
 // Login
 router.post('/login', async (req, res) => {
     try {
@@ -37,9 +37,9 @@ router.post('/login', async (req, res) => {
                     username: req.body.username
                 }
             });
-        console.log(userData.id);
-        thisUserData = userData;
-        console.log(thisUserData);
+        users.push(userData);
+        const singleUserData = users.map((users) => users.get({ plain: true }));
+        console.log(singleUserData);
 
         if (!userData) {
             res
@@ -60,8 +60,8 @@ router.post('/login', async (req, res) => {
         req.session.save(() => {
             req.session.user_id = userData.id;
             req.session.logged_in = true;
-            console.log(req.session);
-            res.json({userData});
+            // console.log(req.session);
+            res.json({ userData });
         });
 
 

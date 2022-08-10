@@ -107,3 +107,19 @@ body {
 background-color: #8C513B;
 color: #D8D9D0;
 }
+
+.userScores {
+
+    float: left;
+    width: 80vw;
+    margin-left: 20vh;
+    /* margin-right: 10vh; */
+    color: black;
+    text-align: center;
+}
+
+#scoresSection {
+background: none;
+width: 100vw;
+height: 100vh;
+}
