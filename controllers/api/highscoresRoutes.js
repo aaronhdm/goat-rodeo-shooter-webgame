@@ -11,12 +11,14 @@ const { QueryTypes } = require('sequelize');
 router.get('/', async (req, res) => {
     try {
       const scoreData = await Highscore.findAll({
+        attributes: { exclude: ['password'] },
         include: [
           {
             model: User,
             attributes: ['username'],
           },
         ],
+        // order: [['username', 'ASC']],
       });
       const userScores = scoreData.map((userScore) =>
       userScore.get({ plain: true })

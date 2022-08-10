@@ -1,19 +1,37 @@
+var base_url = window.location.origin;
+var gameURL = base_url + "/game";
+
 const loginFormHandler = async (event) => {
     event.preventDefault();
 
     const userName = document.querySelector('#userName').value.trim();
-    const password = document.querySelector('#password').value.trim();
+    const passWord = document.querySelector('#password').value.trim();
+    console.log(userName);
 
 
-    if (userName && password) {
-        const response = await fetch('/api/users/login', {
+    if (userName && passWord) {
+        let username = userName;
+        let password = passWord;
+        const response = await fetch('/login', {
             method: 'POST',
-            body: JSON.stringify({ userName, password }),
+            body: JSON.stringify({ username, password }),
             headers: { 'Content-Type': 'application/json' },
         });
+      let theResponse = await response.json();
 
         if (response.ok) {
-            document.location.replace('/');
+
+            localStorage.clear();
+            // document.location.replace('/');
+            localStorage.setItem('username', username);
+            localStorage.setItem('user_id', theResponse.userData.id);
+
+            alert("I know it doesn't look like it, but you're logged in now. Coolcoolcool.");
+           
+   
+
+
+
         } else {
             alert('Failed to log in')
         }
@@ -22,6 +40,7 @@ const loginFormHandler = async (event) => {
 
 const signupFormHandler = async (event) => {
     event.preventDefault();
+
 
     let email = document.getElementById('emailSignup').value;
     let username = document.getElementById('userNameSignup').value;
@@ -35,17 +54,17 @@ const signupFormHandler = async (event) => {
         });
 
         if (response.ok) {
-            document.location.replace('/');
-          } else {
+
+        } else {
             alert('Failed to sign up.');
-          }
+        }
     }
 };
 
 document
-  .querySelector('.login-form')
-  .addEventListener('submit', loginFormHandler);
+    .querySelector('.login-form')
+    .addEventListener('submit', loginFormHandler);
 
 document
-  .querySelector('.signup-form')
-  .addEventListener('submit', signupFormHandler);
+    .querySelector('.signup-form')
+    .addEventListener('submit', signupFormHandler);
