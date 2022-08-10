@@ -41,15 +41,13 @@ const loginFormHandler = async (event) => {
 const signupFormHandler = async (event) => {
     event.preventDefault();
 
-
-    let email = document.getElementById('emailSignup').value;
     let username = document.getElementById('userNameSignup').value;
     let password = document.getElementById('passwordSignup').value;
 
-    if (username && email && password) {
+    if (username && password) {
         const response = await fetch('/users', {
             method: 'POST',
-            body: JSON.stringify({ username, email, password }),
+            body: JSON.stringify({ username, password }),
             headers: { 'Content-Type': 'application/json' },
         });
 
