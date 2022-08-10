@@ -1,3 +1,18 @@
+let username;
+let user_id;
+if (localStorage.getItem('username') !== null) {
+    username = localStorage.getItem('username');
+    user_id = JSON.parse(localStorage.getItem('user_id'));
+    console.log(username);
+    console.log(user_id);
+} else {
+    username = "Player One"
+    console.loe("Generic username applied");
+    user_id = 1
+}
+
+
+
 // Canvas Setup
 const canvas = document.getElementById('canvas1');
 const displayScore = document.getElementById('points');
@@ -5,10 +20,6 @@ const displayscoreNegativeModifier = document.getElementById('scoreNegativeModif
 const gameState = document.getElementById('pauseGame');
 
 let gamePaused = false;
-
-let user_id = 1;
-
-
 
 let ctx = canvas.getContext('2d');
 gameState.addEventListener('click', () => {
@@ -46,16 +57,16 @@ setInterval(
                 enemyLevel = 5;
             }
             else if (score > 100 && enemyLevel == 5) {
-                enemyLevel = 0;
+                enemyLevel = 2;
             }
-            console.log("enemy level " + enemyLevel);
+            // console.log("enemy level " + enemyLevel);
         }
     }, 500
 );
 
 window.document.addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
-      window.location.reload();
+        window.location.reload();
     }
 });
 let penalty = 0;
@@ -309,15 +320,16 @@ let enemyTimer = 0;
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 function animate() {
     endgame: if (score >= 0 && penalty > score) {
-        console.log("STOP")
+        // console.log("STOP")
         gamePaused = true;
-        if(score > 0) {
+
+        ctx.font = "30px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText("Gave Over! Press ENTER to play again!", canvas.width / 2, 200);
+        audio.pause();
+        if (score > 0) {
             saveScore(score, user_id);
         }
-        ctx.font = "30px Arial";
-        ctx.textAlign = "center";      
-        ctx.fillText("Gave Over! Press ENTER to play again!", canvas.width / 2, 200);   
-        audio.pause();
         break endgame;
     }
 
@@ -413,15 +425,15 @@ function animate() {
                     setTimeout(() => {
                         powerup.splice(0, 1);
                         powerupStatus = false;
-                        console.log('IFFINBB');
-                        console.log(powerup);
-                        console.log(powerupStatus)
+                        // console.log('IFFINBB');
+                        // console.log(powerup);
+                        // console.log(powerupStatus)
                         player.speed = 25;
-                        console.log(player.speed);
+                        // console.log(player.speed);
                         function stateChange(powerupStatus) {
                             setTimeout(function () {
                                 if (!powerupStatus) {
-                                    console.log("can engage new powerup now");
+                                    // console.log("can engage new powerup now");
                                     powerup.push(new Powerup());
                                     powerup[0].update();
                                     player.speed = 9;
@@ -456,7 +468,7 @@ function animate() {
                     setTimeout(() => {
                         projectiles.splice(index, 1)
                         index--;
-                        console.log(projectiles);
+                        // console.log(projectiles);
                     }, 0);
                     myResolve();
                 }
@@ -476,7 +488,7 @@ function animate() {
                 if (enemy.x + enemy.width <= 0) {
                     penalty = penalty + 5;
                     enemyArray.splice(index, 1)
-                    console.log(enemyArray);
+                    // console.log(enemyArray);
                     // console.log("Animals escaped: " + penalty)
                     displayscoreNegativeModifier.innerHTML = penalty;
 
@@ -489,10 +501,11 @@ function animate() {
     }
 
     // ENEMY SPAWN TIMER
-    if (enemyTimer % 200 === 0) {
+    if (enemyTimer % enemyLevel === 0) {
         enemyArray.push(new Enemy);
     }
     enemyTimer++;
+    // console.log(enemyTimer);
 };
 
 let fpsSetting = 30;

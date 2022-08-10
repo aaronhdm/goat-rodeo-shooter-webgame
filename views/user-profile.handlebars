@@ -26,16 +26,13 @@
         </div>
     </nav>
 
-    <main>
-        <div id="main">
-            <h3> {{User.username}} </h3>
-            <p> {{User.email}} </p>
-            <h3> Player History </h3>
-            <ul>
-                <li> Kills: {{User.kills}} Deaths:{{User.deaths}} </li>
-            </ul>
-        </div>
-    </main>
-    <div>
-        <button type="submit" class="btn btn-primary start"> Start </button>
-    </div>
+{{#each users as |user| }}
+<div class="row align-center mb-5">
+  <div class="col-md-6">
+    <h2>{{{get_emoji}}} {{user.name}}</h2>
+  </div>
+  <div class="col-md-6">
+    <h3>IDK YET></h3>
+  </div>
+</div>
+{{/each}} 

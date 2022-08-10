@@ -11,12 +11,14 @@ const { QueryTypes } = require('sequelize');
 router.get('/', async (req, res) => {
     try {
       const scoreData = await Highscore.findAll({
+        attributes: { exclude: ['password'] },
         include: [
           {
             model: User,
             attributes: ['username'],
           },
         ],
+        // order: [['username', 'ASC']],
       });
       const userScores = scoreData.map((userScore) =>
       userScore.get({ plain: true })
@@ -40,7 +42,7 @@ router.post('/', async (req, res) => {
   });
   
   // if the SCORE is successfully created, the new response will be returned as json
-  // res.status(200).json(scoreData)
+  res.status(200).json(scoreData)
   console.log(scoreData)
   // res.render('userscorespage', {
   //   userScores,
