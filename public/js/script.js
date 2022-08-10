@@ -315,7 +315,8 @@ function animate() {
             saveScore(score, user_id);
         }
         ctx.font = "30px Arial";
-        ctx.fillText("Game Over! Press ENTER to play again!", (canvas.width / 4) - 100, 200);
+        ctx.textAlign = "center";      
+        ctx.fillText("Gave Over! Press ENTER to play again!", canvas.width / 2, 200);   
         audio.pause();
         break endgame;
     }
