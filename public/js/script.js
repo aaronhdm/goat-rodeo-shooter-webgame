@@ -322,13 +322,14 @@ function animate() {
     endgame: if (score >= 0 && penalty > score) {
         // console.log("STOP")
         gamePaused = true;
-        if (score > 0) {
-            saveScore(score, user_id);
-        }
+
         ctx.font = "30px Arial";
         ctx.textAlign = "center";
         ctx.fillText("Gave Over! Press ENTER to play again!", canvas.width / 2, 200);
         audio.pause();
+        if (score > 0) {
+            saveScore(score, user_id);
+        }
         break endgame;
     }
 
