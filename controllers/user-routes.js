@@ -25,9 +25,6 @@ router.post('/users', async (req, res) => {
 });
 // --------------------------------
 
-
-let thisUserData;
-
 // Login
 router.post('/login', async (req, res) => {
     try {
@@ -37,9 +34,7 @@ router.post('/login', async (req, res) => {
                     username: req.body.username
                 }
             });
-        console.log(userData.id);
-        thisUserData = userData;
-        console.log(thisUserData);
+
 
         if (!userData) {
             res
