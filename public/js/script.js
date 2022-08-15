@@ -104,10 +104,11 @@ class Enemy {
             this.width = 63,
             this.height = 81,
             this.y = this.height + Math.random() * (canvas.height - this.height * 2),
-
             this.frameX = 0,
             this.frameY = 1,
-            this.speed = Math.random() * 9 + 2
+            this.speed = 6,
+            this.counted = false,
+            this.dead = false
     }
     update() {
         drawSprite(enemySprite, this.width * this.frameX, this.height * this.frameY, this.width, this.height, this.x, this.y, this.width, this.height);
@@ -146,7 +147,6 @@ class Projectile {
     constructor({ position, velocity }) {
         this.position = position;
         this.velocity = velocity;
-
         this.radius = 3;
     }
 
@@ -223,33 +223,36 @@ function drawSprite(img, sX, sY, sW, sH, dX, dY, dW, dH) {
 window.addEventListener('keydown', function (e) {
     keys[e.key] = true;
     // player.moving = true;
-    if (keys[" "]) {
 
-        // PLAY GAME MUSIC ON FIRST BUTTON PRESS AND WHOOSH SOUND ON ALL PRESSES
-        audio1.play();
-        audio.play();
-        audio.loop = true;
-
-        for (let i = 0; i < 10; i++) {
-            particlesArray.push(new Particle());
-        }
-        projectiles.push(new Projectile({
-            position: {
-                x: player.x + player.height / 2,
-                y: player.y + player.height / 2,
-            },
-            velocity: {
-                x: 10,
-                y: 0,
-            }
-        })
-        )
-    }
 });
 
 window.addEventListener('keyup', function (e) {
     delete keys[e.key];
     player.moving = false;
+});
+
+window.addEventListener('keyup', function (e) {
+
+    // PLAY GAME MUSIC ON FIRST BUTTON PRESS AND WHOOSH SOUND ON ALL PRESSES
+    audio1.play();
+    audio.play();
+    audio.loop = true;
+
+    for (let i = 0; i < 10; i++) {
+        particlesArray.push(new Particle());
+    }
+    projectiles.push(new Projectile({
+        position: {
+            x: player.x + player.height / 2,
+            y: player.y + player.height / 2,
+        },
+        velocity: {
+            x: 10,
+            y: 0,
+        }
+    })
+    )
+
 });
 
 function movePlayer() {
@@ -353,52 +356,6 @@ function animate() {
 
         // DRAW PLAYER CHARACTER AT GAME START AND REFRESH AT EACH FRAME
         drawSprite(playerSprite, player.width * player.frameX, player.height * player.frameY, player.width, player.height, player.x, player.y, player.width, player.height);
-        function RectCircleColliding(projectile, enemy) {
-            var distX = Math.abs(projectile.position.x - enemy.x - enemy.width / 2);
-            var distY = Math.abs(projectile.position.y - enemy.y - enemy.height / 2);
-
-            if (distX > (enemy.width / 2 + projectile.radius)) { return false; }
-            if (distY > (enemy.height / 2 + projectile.radius)) { return false; }
-
-            if (distX <= (enemy.width / 2)) { return true; }
-            if (distY <= (enemy.height / 2)) { return true; }
-
-            var dx = distX - enemy.w / 2;
-            var dy = distY - enemy.h / 2;
-            return Promise.resolve(dx * dx + dy * dy <= (projectile.radius * projectile.radius));
-        }
-        // PROJECTILE AND ENEMY COLLISION DETECTION
-
-        let enemyHitByBallDetection = new Promise(function (Resolve, Reject) {
-            enemyArray.forEach((enemy, i) => {
-                enemy.update();
-                projectiles.forEach((projectile, j) => {
-                    // console.log(projectile.y)
-                    if (
-                        RectCircleColliding(projectile, enemy)
-
-                    ) {
-                        setTimeout(() => {
-                            score++;
-
-                            displayScore.innerHTML = score;
-                            // console.log(score)
-                            enemyArray.splice(i, 1);
-                            projectiles.splice(j, 1)
-
-                            i--;
-                            j--;
-                            audio2.play();
-                            Resolve();
-                        }, 0);
-                    }
-
-                });
-            });
-        });
-
-        enemyHitByBallDetection.then();
-
 
         if (powerup.length) {
             powerup[0].update();
@@ -497,15 +454,63 @@ function animate() {
                 }
             });
         })
-        deleteEnemy.then();
+        deleteEnemy.then(function () {
+            console.log("enemy out of bounds");
+        });
     }
 
+
+    enemyTimer++;
+    // console.log(enemyTimer);
+    function RectCircleColliding(projectile, enemy) {
+        var distX = Math.abs(projectile.position.x - enemy.x - enemy.width / 2);
+        var distY = Math.abs(projectile.position.y - enemy.y - enemy.height / 2);
+
+        if (distX > (enemy.width / 2 + projectile.radius)) { return false; }
+        if (distY > (enemy.height / 2 + projectile.radius)) { return false; }
+
+        if (distX <= (enemy.width / 2)) { return true; }
+        if (distY <= (enemy.height / 2)) { return true; }
+
+        var dx = distX - enemy.w / 2;
+        var dy = distY - enemy.h / 2;
+        return Promise.resolve(dx * dx + dy * dy <= (projectile.radius * projectile.radius));
+    }
+    // PROJECTILE AND ENEMY COLLISION DETECTION
+
+
+    enemyArray.forEach(async (enemy, i) => {
+        // enemy.update();
+        await projectiles.forEach((projectile, j) => {
+            // console.log(projectile.y)
+            if (RectCircleColliding(projectile, enemy)) {
+                if (!enemy.counted && !enemy.dead) {
+                    enemy.counted = true;
+                    enemy.dead = true;
+                    setTimeout(() => {
+                        score++;
+                        displayScore.innerHTML = score;
+                        // console.log(score)
+                        enemyArray.splice(i, 1);
+                        projectiles.splice(j, 1)
+                        i--;
+                        j--;
+                        audio2.play();
+                        console.log("BROKE ASS FUNCTION FIRED OFF")
+                    }, 0);
+                }
+
+            }
+
+        });
+    });
     // ENEMY SPAWN TIMER
     if (enemyTimer % enemyLevel === 0) {
         enemyArray.push(new Enemy);
     }
-    enemyTimer++;
-    // console.log(enemyTimer);
+    enemyArray.forEach((enemy) => {
+        enemy.update();
+    });
 };
 
 let fpsSetting = 30;

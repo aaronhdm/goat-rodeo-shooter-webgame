@@ -26,8 +26,8 @@ const loginFormHandler = async (event) => {
             localStorage.setItem('username', username);
             localStorage.setItem('user_id', theResponse.userData.id);
 
-            alert("I know it doesn't look like it, but you're logged in now. Coolcoolcool.");
-           
+            // alert("I know it doesn't look like it, but you're logged in now. Coolcoolcool.");
+            location.reload();
    
 
 
@@ -52,7 +52,7 @@ const signupFormHandler = async (event) => {
         });
 
         if (response.ok) {
-
+            location.reload();
         } else {
             alert('Failed to sign up.');
         }
