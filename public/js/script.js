@@ -44,29 +44,32 @@ let score = 0;
 let finalScore = 0;
 
 let enemyLevel = 20;
-setInterval(
-    function () {
-        if (score > 1 && enemyLevel > 0) {
-            if (score > 10 && enemyLevel == 20) {
-                enemyLevel = 15;
-            }
-            else if (score > 25 && enemyLevel == 15) {
-                enemyLevel = 10;
-            }
-            else if (score > 50 && enemyLevel == 10) {
-                enemyLevel = 5;
-            }
-            else if (score > 100 && enemyLevel == 5) {
-                enemyLevel = 2;
-            }
-            // console.log("enemy level " + enemyLevel);
-        }
-    }, 500
-);
+
 
 window.document.addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
         window.location.reload();
+    }
+    if (e.key === ' ') {
+        // PLAY GAME MUSIC ON FIRST BUTTON PRESS AND WHOOSH SOUND ON ALL PRESSES
+        audio1.play();
+        audio.play();
+        audio.loop = true;
+
+        for (let i = 0; i < 10; i++) {
+            particlesArray.push(new Particle());
+        }
+        projectiles.push(new Projectile({
+            position: {
+                x: player.x + player.height / 2,
+                y: player.y + player.height / 2,
+            },
+            velocity: {
+                x: 10,
+                y: 0,
+            }
+        })
+        )
     }
 });
 let penalty = 0;
@@ -103,10 +106,11 @@ class Enemy {
         this.x = canvas.width,
             this.width = 63,
             this.height = 81,
-            this.y = this.height + Math.random() * (canvas.height - this.height * 2),
+            this.y = this.height + Math.floor(Math.random() * (canvas.height - this.height * 2)),
+            // this.y = 200,
             this.frameX = 0,
             this.frameY = 1,
-            this.speed = 6,
+            this.speed = 2,
             this.counted = false,
             this.dead = false
     }
@@ -116,6 +120,22 @@ class Enemy {
         // console.log(this.x)
     }
 }
+setInterval(
+    function () {
+        if(enemyArray.length < 15 && score < 25){
+            enemyArray.push(new Enemy);
+        } else if (enemyArray.length < 50 && score > 25) {
+            enemyArray.push(new Enemy);
+        }
+        else if (enemyArray.length < 100 && score > 75) {
+            enemyArray.push(new Enemy);
+        } else if (enemyArray.length < 200 && score > 100) {
+            enemyArray.push(new Enemy);
+        }
+
+    }, 100
+);
+
 
 class Powerup {
     constructor() {
@@ -231,29 +251,11 @@ window.addEventListener('keyup', function (e) {
     player.moving = false;
 });
 
-window.addEventListener('keyup', function (e) {
+// window.addEventListener('keyup', function (e) {
 
-    // PLAY GAME MUSIC ON FIRST BUTTON PRESS AND WHOOSH SOUND ON ALL PRESSES
-    audio1.play();
-    audio.play();
-    audio.loop = true;
 
-    for (let i = 0; i < 10; i++) {
-        particlesArray.push(new Particle());
-    }
-    projectiles.push(new Projectile({
-        position: {
-            x: player.x + player.height / 2,
-            y: player.y + player.height / 2,
-        },
-        velocity: {
-            x: 10,
-            y: 0,
-        }
-    })
-    )
 
-});
+// });
 
 function movePlayer() {
     if (keys["ArrowUp"] && player.y > 0) {
@@ -442,8 +444,16 @@ function animate() {
             // "Producing Code" (May take some time)
             enemyArray.forEach((enemy, index) => {
 
-                if (enemy.x + enemy.width <= 0) {
+                if (enemy.x + enemy.width <= 0 ) {
                     penalty = penalty + 5;
+                    enemyArray.splice(index, 1)
+                    // console.log(enemyArray);
+                    // console.log("Animals escaped: " + penalty)
+                    displayscoreNegativeModifier.innerHTML = penalty;
+
+                    index--;
+                    myResolve();
+                } else if (enemy.dead == true) {
                     enemyArray.splice(index, 1)
                     // console.log(enemyArray);
                     // console.log("Animals escaped: " + penalty)
@@ -479,35 +489,37 @@ function animate() {
     // PROJECTILE AND ENEMY COLLISION DETECTION
 
 
-    enemyArray.forEach(async (enemy, i) => {
-        // enemy.update();
-        await projectiles.forEach((projectile, j) => {
-            // console.log(projectile.y)
+    projectiles.forEach((projectile, i) => {
+
+        enemyArray.forEach((enemy, j) => {
+
+            console.log(enemy)
             if (RectCircleColliding(projectile, enemy)) {
-                if (!enemy.counted && !enemy.dead) {
-                    enemy.counted = true;
+
+
+                setTimeout(() => {
                     enemy.dead = true;
-                    setTimeout(() => {
-                        score++;
-                        displayScore.innerHTML = score;
-                        // console.log(score)
-                        enemyArray.splice(i, 1);
-                        projectiles.splice(j, 1)
-                        i--;
-                        j--;
-                        audio2.play();
-                        console.log("BROKE ASS FUNCTION FIRED OFF")
-                    }, 0);
-                }
+                    score++;
+                    displayScore.innerHTML = score;
+                    // console.log(score)
+                    // enemyArray.splice(enemy, 1);
+                    projectiles.splice(projectile, 1)
+                    i--;
+                    j--;
+                    audio2.play();
+                    console.log("BROKE ASS FUNCTION FIRED OFF")
+                }, 0);
+
 
             }
 
         });
     });
+
     // ENEMY SPAWN TIMER
-    if (enemyTimer % enemyLevel === 0) {
-        enemyArray.push(new Enemy);
-    }
+    // if (enemyTimer % 400 === 0) {
+    //     enemyArray.push(new Enemy);
+    // }
     enemyArray.forEach((enemy) => {
         enemy.update();
     });
