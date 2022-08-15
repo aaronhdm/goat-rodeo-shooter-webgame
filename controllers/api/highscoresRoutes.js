@@ -36,7 +36,7 @@ router.get('/', async (req, res) => {
 // route to create/add a SCORE using async/await
 router.post('/', async (req, res) => {
   let user_id;
-  if (!req.session) {
+  if (req.session) {
     user_id = req.session.user_id;
     
   } else {
