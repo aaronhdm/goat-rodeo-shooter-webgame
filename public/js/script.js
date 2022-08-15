@@ -52,7 +52,10 @@ window.document.addEventListener('keypress', function (e) {
     }
     if (e.key === ' ') {
         // PLAY GAME MUSIC ON FIRST BUTTON PRESS AND WHOOSH SOUND ON ALL PRESSES
-        audio1.play();
+
+        const newThrow = new Audio('./images/throw.mp3');
+        newThrow.play();
+        // audio1.play();
         audio.play();
         audio.loop = true;
 
@@ -167,7 +170,7 @@ class Projectile {
     constructor({ position, velocity }) {
         this.position = position;
         this.velocity = velocity;
-        this.radius = 3;
+        this.radius = 6;
     }
 
     draw() {
@@ -382,6 +385,9 @@ function animate() {
             powerup.forEach(powerups => {
                 if (PlayerPowerupColliding(powerups, player)) {
                     setTimeout(() => {
+
+                        const newPowerupSound = new Audio('./images/powerup.mp3');
+                        newPowerupSound.play();
                         powerup.splice(0, 1);
                         powerupStatus = false;
                         // console.log('IFFINBB');
@@ -506,7 +512,8 @@ function animate() {
                     projectiles.splice(projectile, 1)
                     i--;
                     j--;
-                    audio2.play();
+                    const newHit = new Audio('./images/hit.mp3');
+                    newHit.play();
                     console.log("BROKE ASS FUNCTION FIRED OFF")
                 }, 0);
 
