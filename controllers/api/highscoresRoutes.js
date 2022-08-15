@@ -38,7 +38,7 @@ router.post('/', async (req, res) => {
   try { 
     const scoreData = await Highscore.create({
     score: req.body.score,
-    user_id: req.body.user_id,
+    user_id: req.session.user_id,
   });
   
   // if the SCORE is successfully created, the new response will be returned as json

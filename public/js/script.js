@@ -1,17 +1,3 @@
-let username;
-let user_id;
-if (localStorage.getItem('username') !== null) {
-    username = localStorage.getItem('username');
-    user_id = JSON.parse(localStorage.getItem('user_id'));
-    console.log(username);
-    console.log(user_id);
-} else {
-    username = "Player One"
-    console.loe("Generic username applied");
-    user_id = 1
-}
-
-
 
 // Canvas Setup
 const canvas = document.getElementById('canvas1');
@@ -125,7 +111,7 @@ class Enemy {
 }
 setInterval(
     function () {
-        if(enemyArray.length < 15 && score < 25){
+        if (enemyArray.length < 15 && score < 25) {
             enemyArray.push(new Enemy);
         } else if (enemyArray.length < 50 && score > 25) {
             enemyArray.push(new Enemy);
@@ -336,7 +322,7 @@ function animate() {
         ctx.fillText("Gave Over! Press ENTER to play again!", canvas.width / 2, 200);
         audio.pause();
         if (score > 0) {
-            saveScore(score, user_id);
+            saveScore(score);
         }
         break endgame;
     }
@@ -450,7 +436,7 @@ function animate() {
             // "Producing Code" (May take some time)
             enemyArray.forEach((enemy, index) => {
 
-                if (enemy.x + enemy.width <= 0 ) {
+                if (enemy.x + enemy.width <= 0) {
                     penalty = penalty + 5;
                     enemyArray.splice(index, 1)
                     // console.log(enemyArray);
@@ -537,7 +523,7 @@ let fpsSetting = 30;
 startAnimating(fpsSetting);
 
 
-function saveScore(score, user_id) {
+function saveScore(score) {
     fetch(`/api/userscorepage`, {
         method: 'POST',
         headers: {
@@ -545,7 +531,7 @@ function saveScore(score, user_id) {
         },
         body: JSON.stringify({
             score,
-            user_id,
+            // user_id,
         }),
     });
     console.log("SCORE SAVED");
