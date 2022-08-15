@@ -13,8 +13,9 @@ router.post('/users', async (req, res) => {
         });
 
         req.session.save(() => {
-            req.session.loggedIn = true;
-
+            req.session.user_id = userData.id;
+            req.session.name = userData.username;
+            req.session.logged_in = true;
             res.status(200).json(userData);
         });
         console.log("NEW USER");
@@ -35,7 +36,6 @@ router.post('/login', async (req, res) => {
                 }
             });
 
-
         if (!userData) {
             res
                 .status(400)
@@ -51,15 +51,15 @@ router.post('/login', async (req, res) => {
                 .json({ message: 'Incorrect email or password. Please try again!' });
             return;
         }
-
+        console.log(userData);
         req.session.save(() => {
             req.session.user_id = userData.id;
+            req.session.name = userData.username;
             req.session.logged_in = true;
             console.log(req.session);
-            res.json({userData});
+            res.json({ userData });
+
         });
-
-
     } catch (err) {
         console.log(err);
         res.status(500).json(err);
@@ -75,6 +75,8 @@ router.post('/logout', (req, res) => {
         res.status(404).end();
     }
 });
+
+
 
 
 module.exports = router;

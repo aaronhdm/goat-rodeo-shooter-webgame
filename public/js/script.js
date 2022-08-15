@@ -1,17 +1,3 @@
-let username;
-let user_id;
-if (localStorage.getItem('username') !== null) {
-    username = localStorage.getItem('username');
-    user_id = JSON.parse(localStorage.getItem('user_id'));
-    console.log(username);
-    console.log(user_id);
-} else {
-    username = "Player One"
-    console.loe("Generic username applied");
-    user_id = 1
-}
-
-
 
 // Canvas Setup
 const canvas = document.getElementById('canvas1');
@@ -44,29 +30,35 @@ let score = 0;
 let finalScore = 0;
 
 let enemyLevel = 20;
-setInterval(
-    function () {
-        if (score > 1 && enemyLevel > 0) {
-            if (score > 10 && enemyLevel == 20) {
-                enemyLevel = 15;
-            }
-            else if (score > 25 && enemyLevel == 15) {
-                enemyLevel = 10;
-            }
-            else if (score > 50 && enemyLevel == 10) {
-                enemyLevel = 5;
-            }
-            else if (score > 100 && enemyLevel == 5) {
-                enemyLevel = 2;
-            }
-            // console.log("enemy level " + enemyLevel);
-        }
-    }, 500
-);
+
 
 window.document.addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
         window.location.reload();
+    }
+    if (e.key === ' ') {
+        // PLAY GAME MUSIC ON FIRST BUTTON PRESS AND WHOOSH SOUND ON ALL PRESSES
+
+        const newThrow = new Audio('./images/throw.mp3');
+        newThrow.play();
+        // audio1.play();
+        audio.play();
+        audio.loop = true;
+
+        for (let i = 0; i < 10; i++) {
+            particlesArray.push(new Particle());
+        }
+        projectiles.push(new Projectile({
+            position: {
+                x: player.x + player.height / 2,
+                y: player.y + player.height / 2,
+            },
+            velocity: {
+                x: 10,
+                y: 0,
+            }
+        })
+        )
     }
 });
 let penalty = 0;
@@ -103,11 +95,13 @@ class Enemy {
         this.x = canvas.width,
             this.width = 63,
             this.height = 81,
-            this.y = this.height + Math.random() * (canvas.height - this.height * 2),
-
+            this.y = this.height + Math.floor(Math.random() * (canvas.height - this.height * 2)),
+            // this.y = 200,
             this.frameX = 0,
             this.frameY = 1,
-            this.speed = Math.random() * 9 + 2
+            this.speed = 2,
+            this.counted = false,
+            this.dead = false
     }
     update() {
         drawSprite(enemySprite, this.width * this.frameX, this.height * this.frameY, this.width, this.height, this.x, this.y, this.width, this.height);
@@ -115,6 +109,22 @@ class Enemy {
         // console.log(this.x)
     }
 }
+setInterval(
+    function () {
+        if (enemyArray.length < 15 && score < 25) {
+            enemyArray.push(new Enemy);
+        } else if (enemyArray.length < 50 && score > 25) {
+            enemyArray.push(new Enemy);
+        }
+        else if (enemyArray.length < 100 && score > 75) {
+            enemyArray.push(new Enemy);
+        } else if (enemyArray.length < 200 && score > 100) {
+            enemyArray.push(new Enemy);
+        }
+
+    }, 100
+);
+
 
 class Powerup {
     constructor() {
@@ -146,8 +156,7 @@ class Projectile {
     constructor({ position, velocity }) {
         this.position = position;
         this.velocity = velocity;
-
-        this.radius = 3;
+        this.radius = 6;
     }
 
     draw() {
@@ -223,34 +232,19 @@ function drawSprite(img, sX, sY, sW, sH, dX, dY, dW, dH) {
 window.addEventListener('keydown', function (e) {
     keys[e.key] = true;
     // player.moving = true;
-    if (keys[" "]) {
 
-        // PLAY GAME MUSIC ON FIRST BUTTON PRESS AND WHOOSH SOUND ON ALL PRESSES
-        audio1.play();
-        audio.play();
-        audio.loop = true;
-
-        for (let i = 0; i < 10; i++) {
-            particlesArray.push(new Particle());
-        }
-        projectiles.push(new Projectile({
-            position: {
-                x: player.x + player.height / 2,
-                y: player.y + player.height / 2,
-            },
-            velocity: {
-                x: 10,
-                y: 0,
-            }
-        })
-        )
-    }
 });
 
 window.addEventListener('keyup', function (e) {
     delete keys[e.key];
     player.moving = false;
 });
+
+// window.addEventListener('keyup', function (e) {
+
+
+
+// });
 
 function movePlayer() {
     if (keys["ArrowUp"] && player.y > 0) {
@@ -328,7 +322,7 @@ function animate() {
         ctx.fillText("Gave Over! Press ENTER to play again!", canvas.width / 2, 200);
         audio.pause();
         if (score > 0) {
-            saveScore(score, user_id);
+            saveScore(score);
         }
         break endgame;
     }
@@ -353,52 +347,6 @@ function animate() {
 
         // DRAW PLAYER CHARACTER AT GAME START AND REFRESH AT EACH FRAME
         drawSprite(playerSprite, player.width * player.frameX, player.height * player.frameY, player.width, player.height, player.x, player.y, player.width, player.height);
-        function RectCircleColliding(projectile, enemy) {
-            var distX = Math.abs(projectile.position.x - enemy.x - enemy.width / 2);
-            var distY = Math.abs(projectile.position.y - enemy.y - enemy.height / 2);
-
-            if (distX > (enemy.width / 2 + projectile.radius)) { return false; }
-            if (distY > (enemy.height / 2 + projectile.radius)) { return false; }
-
-            if (distX <= (enemy.width / 2)) { return true; }
-            if (distY <= (enemy.height / 2)) { return true; }
-
-            var dx = distX - enemy.w / 2;
-            var dy = distY - enemy.h / 2;
-            return Promise.resolve(dx * dx + dy * dy <= (projectile.radius * projectile.radius));
-        }
-        // PROJECTILE AND ENEMY COLLISION DETECTION
-
-        let enemyHitByBallDetection = new Promise(function (Resolve, Reject) {
-            enemyArray.forEach((enemy, i) => {
-                enemy.update();
-                projectiles.forEach((projectile, j) => {
-                    // console.log(projectile.y)
-                    if (
-                        RectCircleColliding(projectile, enemy)
-
-                    ) {
-                        setTimeout(() => {
-                            score++;
-
-                            displayScore.innerHTML = score;
-                            // console.log(score)
-                            enemyArray.splice(i, 1);
-                            projectiles.splice(j, 1)
-
-                            i--;
-                            j--;
-                            audio2.play();
-                            Resolve();
-                        }, 0);
-                    }
-
-                });
-            });
-        });
-
-        enemyHitByBallDetection.then();
-
 
         if (powerup.length) {
             powerup[0].update();
@@ -423,6 +371,9 @@ function animate() {
             powerup.forEach(powerups => {
                 if (PlayerPowerupColliding(powerups, player)) {
                     setTimeout(() => {
+
+                        const newPowerupSound = new Audio('./images/powerup.mp3');
+                        newPowerupSound.play();
                         powerup.splice(0, 1);
                         powerupStatus = false;
                         // console.log('IFFINBB');
@@ -494,18 +445,77 @@ function animate() {
 
                     index--;
                     myResolve();
+                } else if (enemy.dead == true) {
+                    enemyArray.splice(index, 1)
+                    // console.log(enemyArray);
+                    // console.log("Animals escaped: " + penalty)
+                    displayscoreNegativeModifier.innerHTML = penalty;
+
+                    index--;
+                    myResolve();
                 }
             });
         })
-        deleteEnemy.then();
+        deleteEnemy.then(function () {
+            console.log("enemy out of bounds");
+        });
     }
 
-    // ENEMY SPAWN TIMER
-    if (enemyTimer % enemyLevel === 0) {
-        enemyArray.push(new Enemy);
-    }
+
     enemyTimer++;
     // console.log(enemyTimer);
+    function RectCircleColliding(projectile, enemy) {
+        var distX = Math.abs(projectile.position.x - enemy.x - enemy.width / 2);
+        var distY = Math.abs(projectile.position.y - enemy.y - enemy.height / 2);
+
+        if (distX > (enemy.width / 2 + projectile.radius)) { return false; }
+        if (distY > (enemy.height / 2 + projectile.radius)) { return false; }
+
+        if (distX <= (enemy.width / 2)) { return true; }
+        if (distY <= (enemy.height / 2)) { return true; }
+
+        var dx = distX - enemy.w / 2;
+        var dy = distY - enemy.h / 2;
+        return Promise.resolve(dx * dx + dy * dy <= (projectile.radius * projectile.radius));
+    }
+    // PROJECTILE AND ENEMY COLLISION DETECTION
+
+
+    projectiles.forEach((projectile, i) => {
+
+        enemyArray.forEach((enemy, j) => {
+
+            console.log(enemy)
+            if (RectCircleColliding(projectile, enemy)) {
+
+
+                setTimeout(() => {
+                    enemy.dead = true;
+                    score++;
+                    displayScore.innerHTML = score;
+                    // console.log(score)
+                    // enemyArray.splice(enemy, 1);
+                    projectiles.splice(projectile, 1)
+                    i--;
+                    j--;
+                    const newHit = new Audio('./images/hit.mp3');
+                    newHit.play();
+                    console.log("BROKE ASS FUNCTION FIRED OFF")
+                }, 0);
+
+
+            }
+
+        });
+    });
+
+    // ENEMY SPAWN TIMER
+    // if (enemyTimer % 400 === 0) {
+    //     enemyArray.push(new Enemy);
+    // }
+    enemyArray.forEach((enemy) => {
+        enemy.update();
+    });
 };
 
 let fpsSetting = 30;
@@ -513,7 +523,7 @@ let fpsSetting = 30;
 startAnimating(fpsSetting);
 
 
-function saveScore(score, user_id) {
+function saveScore(score) {
     fetch(`/api/userscorepage`, {
         method: 'POST',
         headers: {
@@ -521,7 +531,7 @@ function saveScore(score, user_id) {
         },
         body: JSON.stringify({
             score,
-            user_id,
+            // user_id,
         }),
     });
     console.log("SCORE SAVED");
