@@ -1,6 +1,6 @@
 # GOAT RODEO 🐐
 ### License
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Demo ⚠️
 [Here is a demo of it in action!](https://courtsandrevival.herokuapp.com/game) 
